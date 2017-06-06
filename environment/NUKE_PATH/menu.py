@@ -82,9 +82,9 @@ try:
     imp.find_module("ftrack_connect")
     imp.find_module("ftrack_connect_nuke")
 
-    import ftrack_assets
+    from grill_tools.nuke import ftrack_assets
     ftrack_assets.register_assets()
-    import ftrack_init
+    from grill_tools.nuke import ftrack_init
     ftrack_init.init()
 except ImportError as error:
     print "Could not find ftrack modules: " + str(error)
