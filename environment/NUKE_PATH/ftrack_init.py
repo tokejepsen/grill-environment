@@ -208,7 +208,7 @@ def init():
 
     # Adding scan_for_unused_components
     menubar = nuke.menu("Nuke")
-    menu = menubar.menu("pyblish-bumpybox")
+    menu = menubar.menu("grill-tools")
     cmd = "from grill_tools.nuke import utils;"
     cmd += "utils.scan_for_unused_components()"
     menu.addCommand("Scan for unused components", cmd)
@@ -216,7 +216,7 @@ def init():
     # Adding published LUT
     lut_init()
 
-    # pyblish-bumpybox callbacks
+    # grill-tools callbacks
     nuke.addOnScriptLoad(fps_init)
     nuke.addOnScriptLoad(resolution_init)
     nuke.addOnScriptLoad(frame_range_init)
@@ -231,7 +231,7 @@ def init():
     try:
         __import__("pyblish_qml")
     except ImportError as e:
-        print("pyblish-bumpybox: Could not load pyblish-qml: %s " % e)
+        print("grill-tools: Could not load pyblish-qml: %s " % e)
     else:
         from pyblish_qml import settings
 

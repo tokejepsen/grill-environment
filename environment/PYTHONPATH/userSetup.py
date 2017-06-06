@@ -133,24 +133,24 @@ pyblish.api.register_gui("pyblish_qml")
 try:
     __import__("pyblish_qml")
 except ImportError as e:
-    print("pyblish-bumpybox: Could not load pyblish-qml: %s " % e)
+    print("grill-tools: Could not load pyblish-qml: %s " % e)
 else:
     from pyblish_qml import settings
     settings.WindowSize = (800, 600)
 
 
-# Adding pyblish-bumpybox menu
+# Adding grill-tools menu
 def grill_tools_menu_init():
 
     gMainWindow = mm.eval("$temp1=$gMainWindow")
-    if mc.menu("pyblish-bumpybox", exists=True):
-        mc.deleteUI("pyblish-bumpybox")
+    if mc.menu("grill-tools", exists=True):
+        mc.deleteUI("grill-tools")
 
     menu = mc.menu(
-        "pyblish-bumpybox",
+        "grill-tools",
         parent=gMainWindow,
         tearOff=False,
-        label="pyblish-bumpybox"
+        label="grill-tools"
     )
 
     mc.menuItem(

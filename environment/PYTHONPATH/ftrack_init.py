@@ -119,7 +119,7 @@ def init():
     try:
         __import__("pyblish_qml")
     except ImportError as e:
-        print("pyblish-bumpybox: Could not load pyblish-qml: %s " % e)
+        print("grill-tools: Could not load pyblish-qml: %s " % e)
     else:
         from pyblish_qml import settings
 

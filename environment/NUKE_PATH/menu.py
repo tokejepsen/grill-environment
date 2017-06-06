@@ -33,14 +33,14 @@ pyblish.api.register_gui("pyblish_qml")
 try:
     __import__("pyblish_qml")
 except ImportError as e:
-    print("pyblish-bumpybox: Could not load pyblish-qml: %s " % e)
+    print("grill-tools: Could not load pyblish-qml: %s " % e)
 else:
     from pyblish_qml import settings
     settings.WindowSize = (800, 600)
 
 # Create menu
 menubar = nuke.menu("Nuke")
-menu = menubar.addMenu("pyblish-bumpybox")
+menu = menubar.addMenu("grill-tools")
 
 cmd = "from grill_tools.nuke import processing_location;"
 cmd += "processing_location.show()"
@@ -51,7 +51,7 @@ cmd += "workspace_loader.show()"
 menu.addCommand("Workspace Loader", cmd)
 
 
-# pyblish-bumpybox callbacks
+# grill-tools callbacks
 # Nuke callback for modifying the write nodes on creation
 def modify_write_node():
 

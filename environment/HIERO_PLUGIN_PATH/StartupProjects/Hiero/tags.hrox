@@ -11,7 +11,7 @@
    <RootBinProjectItem editable="1" guid="{74723746-d7a9-884f-9489-bf0cfe2137fa}" name="Tags">
     <items>
      <TagClassProjectItem editable="1" guid="{30184e7c-e9d0-ba40-8627-f3600b3c7d0b}" name="audio">
-      <TagClass editable="1" objName="tag" guid="1978e3db-6ad6-af41-87e6-88a8c1a2ef6c" visible="1" icon="Y:/bait-conda-git-deployment/repositories/bait-environment/pyblish-bumpybox/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/volume.png" name="audio">
+      <TagClass editable="1" objName="tag" guid="1978e3db-6ad6-af41-87e6-88a8c1a2ef6c" visible="1" icon="Y:/bait-conda-git-deployment/repositories/bait-environment/grill-tools/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/volume.png" name="audio">
        <sets>
         <Set title="" domainroot="tag">
          <values>
@@ -44,7 +44,7 @@
       </TagClass>
      </TagClassProjectItem>
      <TagClassProjectItem editable="1" guid="{569a163e-3e00-3242-8be9-41aa4a9cbf5c}" name="nuke">
-      <TagClass editable="1" objName="tag" guid="1674dcb2-28b2-fe4d-8cc5-d979c3fa0ddd" visible="1" icon="K:/development/tools/pyblish/pyblish-bumpybox/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/nuke.png" name="nuke">
+      <TagClass editable="1" objName="tag" guid="1674dcb2-28b2-fe4d-8cc5-d979c3fa0ddd" visible="1" icon="K:/development/tools/pyblish/grill-tools/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/nuke.png" name="nuke">
        <sets>
         <Set title="" domainroot="tag">
          <values>
@@ -55,7 +55,7 @@
       </TagClass>
      </TagClassProjectItem>
      <TagClassProjectItem editable="1" guid="{d1b126a9-61ad-cc46-aba2-cd808b4c7a13}" name="ftrack">
-      <TagClass editable="1" objName="tag" guid="abc452e8-ddd3-ee43-9504-19275ea613ca" visible="1" icon="K:/development/tools/pyblish/pyblish-bumpybox/pyblish_bumpybox/hiero/StartupProjects/Hiero/ftrack.png" name="ftrack">
+      <TagClass editable="1" objName="tag" guid="abc452e8-ddd3-ee43-9504-19275ea613ca" visible="1" icon="K:/development/tools/pyblish/grill-tools/pyblish_bumpybox/hiero/StartupProjects/Hiero/ftrack.png" name="ftrack">
        <sets>
         <Set title="" domainroot="tag">
          <values>
@@ -549,7 +549,7 @@
      <BinProjectItem editable="1" guid="{f3320cdd-f16a-6a4b-ae2e-58350e17fe9a}" name="transcode">
       <items>
        <TagClassProjectItem editable="1" guid="{e4a631ee-be17-214d-bf72-3230a00d02ac}" name="h264_half">
-        <TagClass editable="1" objName="tag" guid="6bb52592-589c-fe4e-afdc-19858b0c01c3" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/pyblish-bumpybox/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="h264_half">
+        <TagClass editable="1" objName="tag" guid="6bb52592-589c-fe4e-afdc-19858b0c01c3" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/grill-tools/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="h264_half">
          <sets>
           <Set title="" domainroot="tag">
            <values>
@@ -561,7 +561,7 @@
         </TagClass>
        </TagClassProjectItem>
        <TagClassProjectItem editable="1" guid="{b590b130-46f0-5540-90b8-ae69053bd645}" name="h264">
-        <TagClass editable="1" objName="tag" guid="85039e21-0143-cf45-8fa3-ae8d36d21c49" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/pyblish-bumpybox/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="h264">
+        <TagClass editable="1" objName="tag" guid="85039e21-0143-cf45-8fa3-ae8d36d21c49" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/grill-tools/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="h264">
          <sets>
           <Set title="" domainroot="tag">
            <values>
@@ -573,7 +573,7 @@
         </TagClass>
        </TagClassProjectItem>
        <TagClassProjectItem editable="1" guid="{e1d38f65-97a5-0244-a35f-478575481aa7}" name="jpeg_half">
-        <TagClass editable="1" objName="tag" guid="9cbff13b-6828-dc48-9c0f-7b5eb0badc4e" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/pyblish-bumpybox/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="jpeg_half">
+        <TagClass editable="1" objName="tag" guid="9cbff13b-6828-dc48-9c0f-7b5eb0badc4e" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/grill-tools/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="jpeg_half">
          <sets>
           <Set title="" domainroot="tag">
            <values>
@@ -585,7 +585,7 @@
         </TagClass>
        </TagClassProjectItem>
        <TagClassProjectItem editable="1" guid="{01c5b973-e538-7846-ae6f-e2f394209d97}" name="jpeg">
-        <TagClass editable="1" objName="tag" guid="bc82d0cb-0a45-154a-9b5b-0eaf4441de05" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/pyblish-bumpybox/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="jpeg">
+        <TagClass editable="1" objName="tag" guid="bc82d0cb-0a45-154a-9b5b-0eaf4441de05" visible="1" icon="Y:/bumpybox-conda-git-deployment/repositories/bumpybox-environment/grill-tools/pyblish_bumpybox/environment_variables/hiero_plugin_path/StartupProjects/Hiero/transcode.png" name="jpeg">
          <sets>
           <Set title="" domainroot="tag">
            <values>
