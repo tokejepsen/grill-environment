@@ -1,1 +1,1 @@
-# grill-environment
+# pyblish-grill-environment
