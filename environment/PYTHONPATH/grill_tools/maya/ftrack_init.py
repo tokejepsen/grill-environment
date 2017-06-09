@@ -109,8 +109,10 @@ def disable_debug():
 
 
 def init():
-    pm.evalDeferred("ftrack_init.resolution_init()", lowestPriority=True)
-    pm.evalDeferred("ftrack_init.render_range_init()", lowestPriority=True)
+    # Check to see if launched from a task.
+    if "FTRACK_TASKID" in os.environ:
+        pm.evalDeferred("ftrack_init.resolution_init()", lowestPriority=True)
+        pm.evalDeferred("ftrack_init.render_range_init()", lowestPriority=True)
 
     # Disabling debug logging, cause of FTrack constant stream of print outs.
     mc.evalDeferred("ftrack_init.disable_debug()", lowestPriority=True)
@@ -122,6 +124,10 @@ def init():
         print("grill-tools: Could not load pyblish-qml: %s " % e)
     else:
         from pyblish_qml import settings
+
+        # Check to see if launched from a task.
+        if "FTRACK_TASKID" not in os.environ:
+            return
 
         session = ftrack_api.Session()
         task = session.get("Task", os.environ["FTRACK_TASKID"])
