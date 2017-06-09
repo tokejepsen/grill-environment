@@ -148,6 +148,10 @@ def frame_range_init():
 
 def lut_init():
 
+    # Check to see if launched from a task.
+    if "FTRACK_TASKID" not in os.environ:
+        return
+    
     # Get published LUT, either on the current task or through parents.
     session = ftrack_api.Session()
 
