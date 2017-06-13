@@ -13,8 +13,9 @@ environment["PYTHONPATH"] = [os.path.join(root, "environment", "PYTHONPATH")]
 environment["NUKE_PATH"] = [os.path.join(root, "environment", "NUKE_PATH")]
 
 # HOUDINI_PATH
+# NOTE: Houdini's env file in the users directory, does not like backslashes
 environment["HOUDINI_PATH"] = [
-    os.path.join(root, "environment", "HOUDINI_PATH"), "&"
+    os.path.join(root, "environment", "HOUDINI_PATH").replace("\\", "/"), "&"
 ]
 
 # HIERO_PLUGIN_PATH
