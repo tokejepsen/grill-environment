@@ -151,7 +151,7 @@ def lut_init():
     # Check to see if launched from a task.
     if "FTRACK_TASKID" not in os.environ:
         return
-    
+
     # Get published LUT, either on the current task or through parents.
     session = ftrack_api.Session()
 
@@ -210,6 +210,10 @@ def modify_viewer_node(viewerprocess):
 
 def init():
 
+    # Check to see if launched from a task.
+    if "FTRACK_TASKID" not in os.environ:
+        return
+
     # Adding scan_for_unused_components
     menubar = nuke.menu("Nuke")
     menu = menubar.menu("grill-tools")
@@ -242,7 +246,7 @@ def init():
         # Check to see if launched from a task.
         if "FTRACK_TASKID" not in os.environ:
             return
-        
+
         session = ftrack_api.Session()
         task = session.get("Task", os.environ["FTRACK_TASKID"])
         ftrack_path = ""
