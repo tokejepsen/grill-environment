@@ -92,7 +92,7 @@ def resolution_init():
         if fmt:
             nuke.root()['format'].setValue(fmt.name())
         else:
-            fmt = "{0} {1} FtrackDefault"
+            fmt = "{0} {1} FtrackDefault".format(int(width), int(height))
             nuke.addFormat(fmt)
             nuke.root()['format'].setValue("FtrackDefault")
 
