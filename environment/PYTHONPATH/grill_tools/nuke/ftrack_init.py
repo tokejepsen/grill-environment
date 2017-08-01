@@ -66,10 +66,11 @@ def project_settings_init():
     local_fstart = remote_fstart = nuke.root()["first_frame"].getValue()
     if "fstart" in task["parent"]["custom_attributes"]:
         remote_fstart = task["parent"]["custom_attributes"]["fstart"]
+        remote_fstart -= handles
     local_fend = remote_fend = nuke.root()["last_frame"].getValue()
     if "fend" in task["parent"]["custom_attributes"]:
         remote_fend = task["parent"]["custom_attributes"]["fend"]
-        remote_fend += (handles * 2)
+        remote_fend += handles
 
     if local_fstart != remote_fstart:
         changes.append(
