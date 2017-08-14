@@ -10,9 +10,15 @@ class SceneAsset(GenericAsset):
 
     def importAsset(self, iAObj=None):
 
-        start, end = HelpFunctions.getFileSequenceStartEnd(iAObj.filePath)
+        file_path = ""
+        component = ftrack.Component(iAObj.componentId)
+        if component.getSystemType() == 'sequence':
+            start, end = HelpFunctions.getFileSequenceStartEnd(iAObj.filePath)
+            file_path = iAObj.filePath % start
+        else:
+            file_path = iAObj.filePath
 
-        nuke.nodePaste(iAObj.filePath % start)
+        nuke.nodePaste(file_path)
 
         if iAObj.options["importSettings"]:
 
