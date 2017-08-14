@@ -43,18 +43,20 @@ def project_settings_init():
         fmt = None
         for f in nuke.formats():
             if f.width() == remote_width and f.height() == remote_height:
-                fmt = f
+                fmt = f.name()
 
         if not fmt:
-            fmt = "{0} {1} FtrackDefault".format(
-                int(remote_width), int(remote_height)
+            nuke.addFormat(
+                "{0} {1} FtrackDefault".format(
+                    int(remote_width), int(remote_height)
+                )
             )
-            nuke.addFormat(fmt)
+            fmt = "FtrackDefault"
 
         changes.append(
             {
                 "setting": nuke.root()["format"],
-                "new": fmt.name(),
+                "new": fmt,
                 "old": nuke.root()["format"].value().name()
             }
         )
