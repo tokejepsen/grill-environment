@@ -32,7 +32,7 @@ def task_tags_init(*args):
         tag = hiero.core.Tag(entity["name"])
 
         meta = tag.metadata()
-        meta.setValue("tag.name", entity["name"].lower())
+        meta.setValue("tag.task_name", entity["name"].lower())
         meta.setValue("tag.type", entity["name"])
         meta.setValue("tag.ftrack", "task")
 
