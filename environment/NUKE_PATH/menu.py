@@ -39,11 +39,18 @@ pyblish.api.register_gui("pyblish_qml")
 # pyblish-qml settings
 try:
     __import__("pyblish_qml")
+    __import__("Qt")
 except ImportError as e:
     print("grill-tools: Could not load pyblish-qml: %s " % e)
 else:
     from pyblish_qml import settings
-    settings.WindowSize = (800, 600)
+    from Qt import QtWidgets
+
+    app = QtWidgets.QApplication.instance()
+    screen_resolution = app.desktop().screenGeometry()
+    width, height = screen_resolution.width(), screen_resolution.height()
+    settings.WindowSize = (width / 2, height - (height / 15))
+    settings.WindowPosition = (0, 0)
 
 # Create menu
 menubar = nuke.menu("Nuke")
