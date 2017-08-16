@@ -14,9 +14,8 @@ def import_img(instance):
     node["file"].setValue(file_path)
 
     # Set range
-    collection_range = instance.data["collection"].format("{range}")
-    start = int(collection_range.split("-")[0])
-    end = int(collection_range.split("-")[1])
+    start = min(instance.data["collection"].indexes)
+    end = max(instance.data["collection"].indexes)
     node["first"].setValue(start)
     node["origfirst"].setValue(start)
     node["last"].setValue(end)
