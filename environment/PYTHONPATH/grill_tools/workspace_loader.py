@@ -34,7 +34,8 @@ class Window(QtWidgets.QDialog):
         context = pyblish.util.collect()
         self.items = []
         for instance in context:
-            if "output" in instance.data["families"]:
+            families = [instance.data["family"]] + instance.data["families"]
+            if "output" in families:
                 self.list.addItem(instance.data["label"])
                 self.items.append(instance)
 
