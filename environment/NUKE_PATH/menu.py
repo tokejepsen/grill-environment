@@ -56,13 +56,22 @@ else:
 menubar = nuke.menu("Nuke")
 menu = menubar.addMenu("grill-tools")
 
-cmd = "from grill_tools.nuke import processing_location;"
-cmd += "processing_location.show()"
-menu.addCommand("Processing Location", cmd)
-
-cmd = "from grill_tools.nuke import workspace_loader;"
-cmd += "workspace_loader.show()"
-menu.addCommand("Workspace Loader", cmd)
+menu.addCommand(
+    "Processing Location",
+    "from grill_tools.nuke import processing_location;"
+    "processing_location.show()"
+)
+menu.addCommand(
+    "Workspace Loader",
+    "from grill_tools.nuke import workspace_loader;workspace_loader.show()"
+)
+# Can't find any hotkey with "r" that isn't already taken. Hence "u".
+menu.addCommand(
+    "Read from Write",
+    "from grill_tools.nuke.read_from_write import ReadFromWrite;"
+    "ReadFromWrite()",
+    "u"
+)
 
 
 # grill-tools callbacks
