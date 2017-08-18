@@ -127,7 +127,7 @@ def import_components(components):
         connector.importAsset(asset)
 
 
-def get_unused_components(session):
+def get_unused_components():
 
     # Get scene data
     component_names = []
@@ -151,6 +151,7 @@ def get_unused_components(session):
 
     data = {}
     components_data = {}
+    session = ftrack_connect.session.get_shared_session()
     for component in session.query(query):
         name = component["name"]
 
@@ -176,11 +177,54 @@ def get_unused_components(session):
     return components
 
 
+def get_scene_versions():
+
+    session = ftrack_connect.session.get_shared_session()
+
+    versions = []
+    for node in nuke.allNodes():
+        knobs = node.knobs()
+        if "assetId" in knobs and "componentName" in knobs:
+            entity_id = (
+                node["assetVersionId"].getValue().split("/")[-1].split("?")[0]
+            )
+            versions.append(
+                session.query(
+                    'AssetVersion where id is "{0}"'.format(entity_id)
+                ).one()
+            )
+
+    return versions
+
+
+def get_unused_version_components(asset_type):
+    session = ftrack_connect.session.get_shared_session()
+    scene_versions = get_scene_versions()
+    versions = []
+    for version in scene_versions:
+        versions.extend(
+            session.query(
+                'AssetVersion where task.id is "{0}" and asset.type.short is '
+                '"{1}"'.format(version["task"]["id"], asset_type)
+            )
+        )
+
+    components = []
+    for version in get_latest_versions(versions):
+        if version in scene_versions:
+            continue
+
+        components.extend(version["components"])
+
+    return components
+
+
 def scan_for_unused_components():
 
     # Get components
-    session = ftrack_api.Session()
-    components = get_unused_components(session)
+    session = ftrack_connect.session.get_shared_session()
+    components = get_unused_components()
+    components.extend(get_unused_version_components("img"))
     if not components:
         return
 
