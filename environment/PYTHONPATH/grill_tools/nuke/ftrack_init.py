@@ -3,6 +3,7 @@ import os
 import nuke
 
 import ftrack_api
+import ftrack_connect
 from ftrack_connect_nuke.ui.legacy import scan_for_new_assets
 from grill_tools.nuke import utils
 from Qt import QtWidgets
@@ -193,12 +194,20 @@ def init():
     if "FTRACK_TASKID" not in os.environ:
         return
 
-    # Adding scan_for_unused_components
+    # Adding menu items
     menubar = nuke.menu("Nuke")
     menu = menubar.menu("grill-tools")
     cmd = "from grill_tools.nuke import utils;"
     cmd += "utils.scan_for_unused_components()"
     menu.addCommand("Scan for unused components", cmd)
+
+    cmd = "from grill_tools.nuke import utils;"
+    cmd += "utils.import_all_image_sequences()"
+    menu.addCommand("Import All Image Sequences", cmd)
+
+    cmd = "from grill_tools.nuke import utils;"
+    cmd += "utils.import_all_gizmos()"
+    menu.addCommand("Import All Gizmos", cmd)
 
     # Adding published LUT
     lut_init()

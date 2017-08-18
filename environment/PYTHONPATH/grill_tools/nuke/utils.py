@@ -1,9 +1,130 @@
+import os
+import operator
+
 import nuke
 
-import ftrack
 import ftrack_api
-from ftrack_connect.connector import HelpFunctions
-from Qt import QtGui
+import ftrack_connect
+from ftrack_connect.connector import FTAssetObject, HelpFunctions
+from ftrack_connect_nuke.connector import Connector
+from Qt import QtGui, QtWidgets
+
+
+class Window(QtWidgets.QDialog):
+
+    def __init__(self, title):
+        super(Window, self).__init__()
+
+        layout = QtWidgets.QHBoxLayout()
+        app = QtWidgets.QApplication.instance()
+        screen_resolution = app.desktop().screenGeometry()
+        s_width, s_height = (
+            screen_resolution.width(), screen_resolution.height()
+        )
+        width = 400
+        self.setGeometry((s_width / 2) - (width / 2), s_height / 2, width, 0)
+        self.setWindowTitle(title)
+        self.setLayout(layout)
+        self.show()
+
+
+def import_all_image_sequences():
+
+    win = Window("Importing all image sequences...")
+
+    session = ftrack_connect.session.get_shared_session()
+    task = session.query(
+        'select parent.id from Task '
+        'where id is "{0}"'.format(os.environ["FTRACK_TASKID"])
+    ).one()
+    versions = session.query(
+        'AssetVersion where asset.parent.id is "{0}" and'
+        ' asset.type.short is "img"'.format(task["parent"]["id"])
+    )
+
+    # Collect all components.
+    components = []
+    for version in get_latest_versions(versions):
+        components.extend(version["components"])
+
+    import_components(components)
+
+    win.deleteLater()
+
+
+def import_all_gizmos():
+
+    win = Window("Importing all gizmos...")
+
+    session = ftrack_connect.session.get_shared_session()
+    task = session.query(
+        'select parent.id from Task '
+        'where id is "{0}"'.format(os.environ["FTRACK_TASKID"])
+    ).one()
+    versions = session.query(
+        'AssetVersion where asset.parent.id is "{0}" and'
+        ' asset.type.short is "nuke_gizmo"'.format(task["parent"]["id"])
+    )
+
+    # Collect all components.
+    components = []
+    for version in get_latest_versions(versions):
+        components.extend(version["components"])
+
+    # Collect all new components
+    new_components = []
+    for component in components:
+        node_exists = nuke.exists(
+            HelpFunctions.safeString(component["version"]["asset"]["name"]) +
+            "_" + HelpFunctions.safeString(component["name"])
+        )
+        if not node_exists:
+            new_components.append(component)
+
+    import_components(new_components)
+
+    win.deleteLater()
+
+
+def get_latest_versions(versions):
+    """Groups versions based on their asset id, and get the latest version."""
+
+    data = {}
+    for version in versions:
+        asset_id = version["asset"]["id"]
+        if asset_id in data.keys():
+            if version["version"] > data[asset_id]["version"]:
+                data[asset_id] = version
+        else:
+            data[asset_id] = version
+
+    return data.values()
+
+
+def import_components(components):
+
+    locations = {}
+    session = ftrack_connect.session.get_shared_session()
+    for location in session.query("select id from Location"):
+        locations[location["id"]] = location
+
+    connector = Connector()
+    for component in components:
+        location_id = max(
+            component.get_availability().iteritems(),
+            key=operator.itemgetter(1)
+        )[0]
+        file_path = locations[location_id].get_resource_identifier(component)
+
+        asset = FTAssetObject(
+                componentId=component['id'],
+                filePath=file_path,
+                componentName=component['name'],
+                assetVersionId=component["version"]["id"],
+                options={}
+        )
+
+        connector.importAsset(asset)
 
 
 def get_unused_components(session):
@@ -53,85 +174,6 @@ def get_unused_components(session):
         components.append(component)
 
     return components
-
-
-def import_components(components):
-
-    for new_component in components:
-
-        component = ftrack.Component(new_component["id"])
-        assetversion = component.getVersion()
-        asset = assetversion.getAsset()
-        assettype = asset.getType()
-
-        # Create node
-        resultingNode = nuke.createNode('Read', inpanel=False)
-        resultingNode['name'].setValue(
-            HelpFunctions.safeString(asset.getName()) + '_' +
-            HelpFunctions.safeString(component.getName())
-        )
-
-        # Add Ftrack tab
-        knobs = resultingNode.knobs().keys()
-        if 'ftracktab' not in knobs:
-            # Note: the tab is supposed to be existing as it gets created
-            # through callback during the read and write nodes creation.
-            # This check is to ensure corner cases are handled properly.
-            tab = nuke.Tab_Knob('ftracktab', 'ftrack')
-            resultingNode.addKnob(tab)
-
-        btn = nuke.String_Knob('componentId')
-        resultingNode.addKnob(btn)
-        btn = nuke.String_Knob('componentName')
-        resultingNode.addKnob(btn)
-        btn = nuke.String_Knob('assetVersionId')
-        resultingNode.addKnob(btn)
-        btn = nuke.String_Knob('assetVersion')
-        resultingNode.addKnob(btn)
-        btn = nuke.String_Knob('assetName')
-        resultingNode.addKnob(btn)
-        btn = nuke.String_Knob('assetType')
-        resultingNode.addKnob(btn)
-        btn = nuke.String_Knob('assetId')
-        resultingNode.addKnob(btn)
-
-        # Setup node
-        file_path = component.getResourceIdentifier()
-        resultingNode['file'].fromUserText(
-            HelpFunctions.safeString(file_path)
-        )
-
-        members = component.getMembers()
-        frames = [int(member.getName()) for member in members]
-        start = min(frames)
-        end = max(frames)
-
-        resultingNode['first'].setValue(start)
-        resultingNode['origfirst'].setValue(start)
-        resultingNode['last'].setValue(end)
-        resultingNode['origlast'].setValue(end)
-
-        resultingNode.knob('assetId').setValue(
-            HelpFunctions.safeString(asset.getId())
-        )
-        resultingNode.knob('componentId').setValue(
-            HelpFunctions.safeString(component.getEntityRef())
-        )
-        resultingNode.knob('componentName').setValue(
-            HelpFunctions.safeString(component.getName())
-        )
-        resultingNode.knob('assetVersionId').setValue(
-            HelpFunctions.safeString(assetversion.getEntityRef())
-        )
-        resultingNode.knob('assetVersion').setValue(
-            HelpFunctions.safeString(str(assetversion.getVersion()))
-        )
-        resultingNode.knob('assetName').setValue(
-            HelpFunctions.safeString(asset.getName())
-        )
-        resultingNode.knob('assetType').setValue(
-            HelpFunctions.safeString(assettype.getShort())
-        )
 
 
 def scan_for_unused_components():
