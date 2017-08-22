@@ -3,7 +3,6 @@ import operator
 
 import nuke
 
-import ftrack_api
 import ftrack_connect
 from ftrack_connect.connector import FTAssetObject, HelpFunctions
 from ftrack_connect_nuke.connector import Connector
