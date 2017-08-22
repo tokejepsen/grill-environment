@@ -141,7 +141,7 @@ def get_unused_components():
 
     # Skip if no existing assets are found
     if not component_names:
-        return
+        return []
 
     # Get all online components
     query = "Component where version.asset.id in ("
