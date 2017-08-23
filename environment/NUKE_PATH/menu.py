@@ -27,10 +27,12 @@ menu.addCommand(
 def modify_write_node():
 
     # Setting the file path
-    file_path = "[python {nuke.script_directory()}]/workspace/"
-    file_path += "[python {nuke.thisNode()[\"name\"].getValue()}]/"
-    file_path += "[python {os.path.splitext(os.path.basename("
-    file_path += "nuke.scriptName()))[0]}].%04d.exr"
+    file_path = (
+        "[python {nuke.script_directory()}]/workspace/[python "
+        "{nuke.thisNode()[\"name\"].getValue()}]/[python "
+        "{os.path.splitext(os.path.basename(nuke.scriptName()))[0]}]_"
+        "[python {nuke.thisNode()[\"name\"].getValue()}].%04d.exr"
+    )
 
     nuke.thisNode()["file"].setValue(file_path)
 
