@@ -138,6 +138,14 @@ class ReadFromWrite(object):
     def filepath_from_disk(self, node, knob_value, knob_eval):
         """Return a valid filepath or return None"""
         filepath = None
+
+        clique_import = False
+        try:
+            import clique
+            clique_import = True
+        except ImportError:
+            pass
+
         if os.path.exists(knob_value):
             filepath = knob_value
         elif os.path.exists(knob_eval):
@@ -147,6 +155,23 @@ class ReadFromWrite(object):
             filepath = self.combined_relative_filepath_exists(
                             knob_eval,
                             return_filepath=True)
+        elif clique_import:
+            files = []
+            for f in os.listdir(os.path.dirname(knob_eval)):
+                files.append(
+                    os.path.abspath(
+                        os.path.join(os.path.dirname(knob_eval), f)
+                    ).replace("\\", "/")
+                )
+
+            collections = clique.assemble(files, minimum_items=1)[0]
+            collection = None
+            for c in collections:
+                if c.match(knob_eval):
+                    collection = c
+
+            filepath = list(collection)[0]
+
         return filepath
 
     def framerange_from_read(self, node):
