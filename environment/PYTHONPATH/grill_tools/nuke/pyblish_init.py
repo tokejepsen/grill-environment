@@ -28,10 +28,106 @@ def custom_toggle_instance(instance, new_value, old_value):
         pass
 
 
-def processing_target():
+def processing_targets_all():
+    import os
+    import pyblish.api
     import pyblish_qml
+    import pyblish_royalrender
+    import pyblish_nuke
 
-    pyblish_qml.show(targets=["processing"])
+    pyblish.api.deregister_all_plugins()
+
+    # Processing plugins
+    paths = []
+    paths.append(
+        os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
+    )
+    for plugin in pyblish.api.discover(paths=paths):
+        SubClass = type(
+            plugin.__name__ + "Processing",
+            (plugin,),
+            {'targets': ["processing"]}
+        )
+        pyblish.api.register_plugin(SubClass)
+
+    # RoyalRender plugins
+    paths = []
+    paths.append(
+        os.path.join(os.path.dirname(pyblish_royalrender.__file__), "plugins")
+    )
+    for plugin in pyblish.api.discover(paths=paths):
+        SubClass = type(
+            plugin.__name__ + "Processing",
+            (plugin,),
+            {'targets': ["processing.royalrender"]}
+        )
+        pyblish.api.register_plugin(SubClass)
+
+    pyblish_qml.show(
+        targets=["processing", "processing.local", "processing.royalrender"]
+    )
+
+
+def processing_targets_local():
+    import os
+    import pyblish.api
+    import pyblish_qml
+    import pyblish_nuke
+
+    pyblish.api.deregister_all_plugins()
+
+    # Processing plugins
+    paths = []
+    paths.append(
+        os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
+    )
+    for plugin in pyblish.api.discover(paths=paths):
+        SubClass = type(
+            plugin.__name__ + "Processing",
+            (plugin,),
+            {'targets': ["processing"]}
+        )
+        pyblish.api.register_plugin(SubClass)
+
+    pyblish_qml.show(targets=["processing", "processing.local"])
+
+
+def processing_targets_royalrender():
+    import os
+    import pyblish.api
+    import pyblish_qml
+    import pyblish_royalrender
+    import pyblish_nuke
+
+    pyblish.api.deregister_all_plugins()
+
+    # Processing plugins
+    paths = []
+    paths.append(
+        os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
+    )
+    for plugin in pyblish.api.discover(paths=paths):
+        SubClass = type(
+            plugin.__name__ + "Processing",
+            (plugin,),
+            {'targets': ["processing"]}
+        )
+        pyblish.api.register_plugin(SubClass)
+
+    # RoyalRender plugins
+    paths = []
+    paths.append(
+        os.path.join(os.path.dirname(pyblish_royalrender.__file__), "plugins")
+    )
+    for plugin in pyblish.api.discover(paths=paths):
+        SubClass = type(
+            plugin.__name__ + "Processing",
+            (plugin,),
+            {'targets': ["processing.royalrender"]}
+        )
+        pyblish.api.register_plugin(SubClass)
+
+    pyblish_qml.show(targets=["processing", "processing.royalrender"])
 
 
 def init():
@@ -64,6 +160,12 @@ def init():
         menu = menubar.menu("grill-tools")
 
         cmd = "from grill_tools.nuke import pyblish_init;"
-        cmd += "pyblish_init.processing_target()"
+        cmd += "pyblish_init.processing_targets_all()"
         menu.addCommand("Process...", cmd, index=0)
-        menu.addSeparator(index=1)
+        cmd = "from grill_tools.nuke import pyblish_init;"
+        cmd += "pyblish_init.processing_targets_local()"
+        menu.addCommand("Process Local...", cmd, index=1)
+        cmd = "from grill_tools.nuke import pyblish_init;"
+        cmd += "pyblish_init.processing_targets_royalrender()"
+        menu.addCommand("Process RoyalRender...", cmd, index=2)
+        menu.addSeparator(index=3)
