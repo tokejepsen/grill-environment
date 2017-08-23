@@ -200,7 +200,9 @@ def get_unused_version_components(asset_type):
     session = ftrack_connect.session.get_shared_session()
     scene_versions = get_scene_versions()
     versions = []
+    scene_assets = []
     for version in scene_versions:
+        scene_assets.append(version["asset"])
         versions.extend(
             session.query(
                 'AssetVersion where task.id is "{0}" and asset.type.short is '
@@ -210,7 +212,7 @@ def get_unused_version_components(asset_type):
 
     components = []
     for version in get_latest_versions(versions):
-        if version in scene_versions:
+        if version["asset"] in scene_assets:
             continue
 
         components.extend(version["components"])
