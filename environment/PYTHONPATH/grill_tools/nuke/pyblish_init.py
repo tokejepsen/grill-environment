@@ -1,6 +1,13 @@
+import os
+
 import nuke
 
 import pyblish.api
+import pyblish_qml
+import pyblish_royalrender
+import pyblish_nuke
+from pyblish_qml import settings
+from Qt import QtWidgets
 
 
 # Pyblish callbacks for presisting instance states to the scene
@@ -28,20 +35,12 @@ def custom_toggle_instance(instance, new_value, old_value):
         pass
 
 
-def processing_targets_all():
-    import os
-    import pyblish.api
-    import pyblish_qml
-    import pyblish_royalrender
-    import pyblish_nuke
-
-    pyblish.api.deregister_all_plugins()
+def register_processing_plugins():
 
     # Processing plugins
-    paths = []
-    paths.append(
+    paths = [
         os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
-    )
+    ]
     for plugin in pyblish.api.discover(paths=paths):
         SubClass = type(
             plugin.__name__ + "Processing",
@@ -50,11 +49,13 @@ def processing_targets_all():
         )
         pyblish.api.register_plugin(SubClass)
 
+
+def register_processing_royalrender_plugins():
+
     # RoyalRender plugins
-    paths = []
-    paths.append(
+    paths = [
         os.path.join(os.path.dirname(pyblish_royalrender.__file__), "plugins")
-    )
+    ]
     for plugin in pyblish.api.discover(paths=paths):
         SubClass = type(
             plugin.__name__ + "Processing",
@@ -62,6 +63,14 @@ def processing_targets_all():
             {'targets': ["processing.royalrender"]}
         )
         pyblish.api.register_plugin(SubClass)
+
+
+def processing_targets_all():
+
+    pyblish.api.deregister_all_plugins()
+
+    register_processing_plugins()
+    register_processing_royalrender_plugins()
 
     pyblish_qml.show(
         targets=["processing", "processing.local", "processing.royalrender"]
@@ -69,63 +78,20 @@ def processing_targets_all():
 
 
 def processing_targets_local():
-    import os
-    import pyblish.api
-    import pyblish_qml
-    import pyblish_nuke
 
     pyblish.api.deregister_all_plugins()
 
-    # Processing plugins
-    paths = []
-    paths.append(
-        os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
-    )
-    for plugin in pyblish.api.discover(paths=paths):
-        SubClass = type(
-            plugin.__name__ + "Processing",
-            (plugin,),
-            {'targets': ["processing"]}
-        )
-        pyblish.api.register_plugin(SubClass)
+    register_processing_plugins()
 
     pyblish_qml.show(targets=["processing", "processing.local"])
 
 
 def processing_targets_royalrender():
-    import os
-    import pyblish.api
-    import pyblish_qml
-    import pyblish_royalrender
-    import pyblish_nuke
 
     pyblish.api.deregister_all_plugins()
 
-    # Processing plugins
-    paths = []
-    paths.append(
-        os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
-    )
-    for plugin in pyblish.api.discover(paths=paths):
-        SubClass = type(
-            plugin.__name__ + "Processing",
-            (plugin,),
-            {'targets': ["processing"]}
-        )
-        pyblish.api.register_plugin(SubClass)
-
-    # RoyalRender plugins
-    paths = []
-    paths.append(
-        os.path.join(os.path.dirname(pyblish_royalrender.__file__), "plugins")
-    )
-    for plugin in pyblish.api.discover(paths=paths):
-        SubClass = type(
-            plugin.__name__ + "Processing",
-            (plugin,),
-            {'targets': ["processing.royalrender"]}
-        )
-        pyblish.api.register_plugin(SubClass)
+    register_processing_plugins()
+    register_processing_royalrender_plugins()
 
     pyblish_qml.show(targets=["processing", "processing.royalrender"])
 
@@ -140,32 +106,23 @@ def init():
     pyblish.api.register_gui("pyblish_qml")
 
     # pyblish-qml settings
-    try:
-        __import__("pyblish_qml")
-        __import__("Qt")
-    except ImportError as e:
-        print("grill-tools: Could not load pyblish-qml: %s " % e)
-    else:
-        from pyblish_qml import settings
-        from Qt import QtWidgets
+    app = QtWidgets.QApplication.instance()
+    screen_resolution = app.desktop().screenGeometry()
+    width, height = screen_resolution.width(), screen_resolution.height()
+    settings.WindowSize = (width / 2, height - (height / 15))
+    settings.WindowPosition = (0, 0)
 
-        app = QtWidgets.QApplication.instance()
-        screen_resolution = app.desktop().screenGeometry()
-        width, height = screen_resolution.width(), screen_resolution.height()
-        settings.WindowSize = (width / 2, height - (height / 15))
-        settings.WindowPosition = (0, 0)
+    # Adding menu items
+    menubar = nuke.menu("Nuke")
+    menu = menubar.menu("grill-tools")
 
-        # Adding menu items
-        menubar = nuke.menu("Nuke")
-        menu = menubar.menu("grill-tools")
-
-        cmd = "from grill_tools.nuke import pyblish_init;"
-        cmd += "pyblish_init.processing_targets_all()"
-        menu.addCommand("Process...", cmd, index=0)
-        cmd = "from grill_tools.nuke import pyblish_init;"
-        cmd += "pyblish_init.processing_targets_local()"
-        menu.addCommand("Process Local...", cmd, index=1)
-        cmd = "from grill_tools.nuke import pyblish_init;"
-        cmd += "pyblish_init.processing_targets_royalrender()"
-        menu.addCommand("Process RoyalRender...", cmd, index=2)
-        menu.addSeparator(index=3)
+    cmd = "from grill_tools.nuke import pyblish_init;"
+    cmd += "pyblish_init.processing_targets_all()"
+    menu.addCommand("Process...", cmd, index=0)
+    cmd = "from grill_tools.nuke import pyblish_init;"
+    cmd += "pyblish_init.processing_targets_local()"
+    menu.addCommand("Process Local...", cmd, index=1)
+    cmd = "from grill_tools.nuke import pyblish_init;"
+    cmd += "pyblish_init.processing_targets_royalrender()"
+    menu.addCommand("Process RoyalRender...", cmd, index=2)
+    menu.addSeparator(index=3)
