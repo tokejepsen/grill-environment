@@ -2,7 +2,7 @@ import os
 
 import nuke
 
-import pyblish.api
+from pyblish import api, util
 import pyblish_qml
 import pyblish_royalrender
 import pyblish_nuke
@@ -35,75 +35,146 @@ def custom_toggle_instance(instance, new_value, old_value):
         pass
 
 
-def register_processing_plugins():
+def register_process_plugins():
 
-    # Processing plugins
+    # process plugins
     paths = [
         os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
     ]
-    for plugin in pyblish.api.discover(paths=paths):
+    for plugin in api.discover(paths=paths):
         SubClass = type(
-            plugin.__name__ + "Processing",
+            plugin.__name__ + "process",
             (plugin,),
-            {'targets': ["processing"]}
+            {'targets': ["process"]}
         )
-        pyblish.api.register_plugin(SubClass)
+        api.register_plugin(SubClass)
 
 
-def register_processing_royalrender_plugins():
+def register_process_royalrender_plugins():
 
     # RoyalRender plugins
     paths = [
         os.path.join(os.path.dirname(pyblish_royalrender.__file__), "plugins")
     ]
-    for plugin in pyblish.api.discover(paths=paths):
+    for plugin in api.discover(paths=paths):
         SubClass = type(
-            plugin.__name__ + "Processing",
+            plugin.__name__ + "process",
             (plugin,),
-            {'targets': ["processing.royalrender"]}
+            {'targets': ["process.royalrender"]}
         )
-        pyblish.api.register_plugin(SubClass)
+        api.register_plugin(SubClass)
 
 
-def processing_targets_all():
+def process_targets_all():
 
-    pyblish.api.deregister_all_plugins()
+    api.deregister_all_plugins()
 
-    register_processing_plugins()
-    register_processing_royalrender_plugins()
+    register_process_plugins()
+    register_process_royalrender_plugins()
 
     pyblish_qml.show(
-        targets=["processing", "processing.local", "processing.royalrender"]
+        targets=["process", "process.local", "process.royalrender"]
     )
 
 
-def processing_targets_local():
+def process_targets_local():
 
-    pyblish.api.deregister_all_plugins()
+    api.deregister_all_plugins()
 
-    register_processing_plugins()
+    register_process_plugins()
 
-    pyblish_qml.show(targets=["processing", "processing.local"])
+    pyblish_qml.show(targets=["process", "process.local"])
 
 
-def processing_targets_royalrender():
+def process_targets_royalrender():
 
-    pyblish.api.deregister_all_plugins()
+    api.deregister_all_plugins()
 
-    register_processing_plugins()
-    register_processing_royalrender_plugins()
+    register_process_plugins()
+    register_process_royalrender_plugins()
 
-    pyblish_qml.show(targets=["processing", "processing.royalrender"])
+    pyblish_qml.show(targets=["process", "process.royalrender"])
+
+
+def feedback_context_success(context):
+
+    header = "{:<40} -> {}".format("Plug-in", "Instance")
+    result = "{plugin.__name__:<40} -> {instance}"
+    error = "+-- EXCEPTION: {:<70}"
+    results = list()
+    errors = False
+    for r in context.data["results"]:
+        # Format exception (if any)
+        if r["error"]:
+            errors = True
+            results.append(result.format(**r))
+            results.append(error.format(r["error"]))
+
+    report = "{header}\n{line}\n{results}".format(
+        header=header, results="\n".join(results), line="-" * 70
+    )
+
+    # Display changes to user
+    parent = None
+    current = QtWidgets.QApplication.activeWindow()
+    while current:
+        parent = current
+        current = parent.parent()
+
+    messagebox = QtWidgets.QMessageBox(parent)
+    messagebox.setWindowTitle("Process")
+    messagebox.setStandardButtons(messagebox.Ok)
+
+    if errors:
+        messagebox.setIcon(messagebox.Warning)
+        messagebox.setText(
+            "Errors when trying to process."
+        )
+        messagebox.setDetailedText(report)
+
+        spacer = QtWidgets.QWidget()
+        spacer.setMinimumSize(400, 0)
+        spacer.setSizePolicy(
+            QtWidgets.QSizePolicy.Minimum,
+            QtWidgets.QSizePolicy.Expanding
+        )
+
+        layout = messagebox.layout()
+        layout.addWidget(spacer, layout.rowCount(), 0, 1, layout.columnCount())
+    else:
+        messagebox.setText(
+            "Process successfull."
+        )
+
+    messagebox.exec_()
+
+
+def process_targets_local_silent():
+
+    api.deregister_all_plugins()
+    register_process_plugins()
+
+    context = util.publish(targets=["process", "process.local"])
+    feedback_context_success(context)
+
+
+def process_targets_royalrender_silent():
+
+    api.deregister_all_plugins()
+    register_process_plugins()
+
+    context = util.publish(targets=["process", "process.royalrender"])
+    feedback_context_success(context)
 
 
 def init():
 
     # Register callbacks
-    pyblish.api.register_callback("instanceToggled", custom_toggle_instance)
+    api.register_callback("instanceToggled", custom_toggle_instance)
 
     # Register GUI
-    pyblish.api.register_gui("pyblish_lite")
-    pyblish.api.register_gui("pyblish_qml")
+    api.register_gui("pyblish_lite")
+    api.register_gui("pyblish_qml")
 
     # pyblish-qml settings
     app = QtWidgets.QApplication.instance()
@@ -117,12 +188,23 @@ def init():
     menu = menubar.menu("grill-tools")
 
     cmd = "from grill_tools.nuke import pyblish_init;"
-    cmd += "pyblish_init.processing_targets_all()"
+    cmd += "pyblish_init.process_targets_all()"
     menu.addCommand("Process...", cmd, index=0)
+
     cmd = "from grill_tools.nuke import pyblish_init;"
-    cmd += "pyblish_init.processing_targets_local()"
+    cmd += "pyblish_init.process_targets_local()"
     menu.addCommand("Process Local...", cmd, index=1)
+
     cmd = "from grill_tools.nuke import pyblish_init;"
-    cmd += "pyblish_init.processing_targets_royalrender()"
-    menu.addCommand("Process RoyalRender...", cmd, index=2)
-    menu.addSeparator(index=3)
+    cmd += "pyblish_init.process_targets_local_silent()"
+    menu.addCommand("Process Local silent...", cmd, "ctrl+1", index=2)
+
+    cmd = "from grill_tools.nuke import pyblish_init;"
+    cmd += "pyblish_init.process_targets_royalrender()"
+    menu.addCommand("Process RoyalRender...", cmd, index=3)
+
+    cmd = "from grill_tools.nuke import pyblish_init;"
+    cmd += "pyblish_init.process_targets_royalrender_silent()"
+    menu.addCommand("Process RoyalRender silent...", cmd, "ctrl+2", index=4)
+
+    menu.addSeparator(index=5)
