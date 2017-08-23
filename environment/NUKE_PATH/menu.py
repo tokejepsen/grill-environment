@@ -10,11 +10,6 @@ menubar = nuke.menu("Nuke")
 menu = menubar.addMenu("grill-tools")
 
 menu.addCommand(
-    "Processing Location",
-    "from grill_tools.nuke import processing_location;"
-    "processing_location.show()"
-)
-menu.addCommand(
     "Workspace Loader",
     "from grill_tools.nuke import workspace_loader;workspace_loader.show()"
 )
