@@ -20,6 +20,11 @@ menu.addCommand(
     "ReadFromWrite()",
     "u"
 )
+menu.addCommand(
+    "Open from Node",
+    "from grill_tools.nuke import utils;utils.open_from_node()",
+    "ctrl+shift+o"
+)
 
 
 # grill-tools callbacks
