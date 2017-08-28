@@ -37,7 +37,7 @@ def project_settings_init():
     if "height" in task["parent"]["custom_attributes"]:
         remote_height = int(task["parent"]["custom_attributes"]["height"])
 
-    if (remote_width and remote_height and remote_width != local_width and
+    if (remote_width and remote_height and remote_width != local_width or
        remote_height != local_height):
 
         fmt = None
