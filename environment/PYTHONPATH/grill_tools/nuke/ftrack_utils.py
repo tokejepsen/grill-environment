@@ -37,13 +37,21 @@ def import_all_image_sequences():
         'where id is "{0}"'.format(os.environ["FTRACK_TASKID"])
     ).one()
     versions = session.query(
-        'AssetVersion where asset.parent.id is "{0}" and'
+        'select id from AssetVersion where asset.parent.id is "{0}" and'
         ' asset.type.short is "img"'.format(task["parent"]["id"])
     )
+
+    scene_ids = []
+    for version in get_scene_versions():
+        scene_ids.append(version["id"])
 
     # Collect all components.
     components = []
     for version in get_latest_versions(versions):
+        # Skip asset in scene
+        if version["id"] in scene_ids:
+            continue
+
         components.extend(version["components"])
 
     import_components(components)
