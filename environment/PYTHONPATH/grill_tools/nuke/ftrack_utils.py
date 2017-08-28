@@ -187,11 +187,11 @@ def get_scene_versions():
             entity_id = (
                 node["assetVersionId"].getValue().split("/")[-1].split("?")[0]
             )
-            versions.append(
-                session.query(
-                    'AssetVersion where id is "{0}"'.format(entity_id)
-                ).one()
-            )
+            entity = session.query(
+                'AssetVersion where id is "{0}"'.format(entity_id)
+            ).first()
+            if entity:
+                versions.append(entity)
 
     return versions
 
