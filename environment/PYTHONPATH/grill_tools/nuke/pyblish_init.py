@@ -28,6 +28,11 @@ def custom_toggle_instance(instance, new_value, old_value):
                 instance[0]["publish"].setValue(bool(new_value))
         return
 
+    # Read instances
+    if "read" == instance.data["family"]:
+        instance[0]["publish"].setValue(bool(new_value))
+        return
+
     # All instances are nodes, except for the scene instance
     try:
         instance[0]["disable"].setValue(not bool(new_value))
