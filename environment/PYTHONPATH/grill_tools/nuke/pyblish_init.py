@@ -33,11 +33,13 @@ def custom_toggle_instance(instance, new_value, old_value):
         instance[0]["publish"].setValue(bool(new_value))
         return
 
-    # All instances are nodes, except for the scene instance
-    try:
-        instance[0]["disable"].setValue(not bool(new_value))
-    except:
-        pass
+    # Write instances
+    if "write" in instance.data["families"]:
+        if "local" in instance.data["families"]:
+            instance[0]["process_local"].setValue(bool(new_value))
+        if "royalrender" in instance.data["families"]:
+            instance[0]["process_royalrender"].setValue(bool(new_value))
+        return
 
 
 def register_process_plugins():
