@@ -93,6 +93,15 @@ def process_targets_local():
     pyblish_qml.show(targets=["process", "process.local"])
 
 
+def process_targets_local_silent():
+
+    api.deregister_all_plugins()
+    register_process_plugins()
+
+    context = util.publish(targets=["process", "process.local"])
+    feedback_context_success(context)
+
+
 def process_targets_royalrender():
 
     api.deregister_all_plugins()
@@ -101,6 +110,17 @@ def process_targets_royalrender():
     register_process_royalrender_plugins()
 
     pyblish_qml.show(targets=["process", "process.royalrender"])
+
+
+def process_targets_royalrender_silent():
+
+    api.deregister_all_plugins()
+
+    register_process_plugins()
+    register_process_royalrender_plugins()
+
+    context = util.publish(targets=["process", "process.royalrender"])
+    feedback_context_success(context)
 
 
 def feedback_context_success(context):
@@ -154,24 +174,6 @@ def feedback_context_success(context):
         )
 
     messagebox.exec_()
-
-
-def process_targets_local_silent():
-
-    api.deregister_all_plugins()
-    register_process_plugins()
-
-    context = util.publish(targets=["process", "process.local"])
-    feedback_context_success(context)
-
-
-def process_targets_royalrender_silent():
-
-    api.deregister_all_plugins()
-    register_process_plugins()
-
-    context = util.publish(targets=["process", "process.royalrender"])
-    feedback_context_success(context)
 
 
 def init():
