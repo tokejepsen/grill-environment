@@ -157,7 +157,11 @@ class ReadFromWrite(object):
                             return_filepath=True)
         elif clique_import:
             files = []
-            for f in os.listdir(os.path.dirname(knob_eval)):
+            parent_dir = os.path.dirname(knob_eval)
+            if not os.path.exists(parent_dir):
+                return filepath
+
+            for f in os.listdir(parent_dir):
                 files.append(
                     os.path.abspath(
                         os.path.join(os.path.dirname(knob_eval), f)
