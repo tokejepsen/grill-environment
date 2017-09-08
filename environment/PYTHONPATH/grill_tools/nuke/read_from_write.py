@@ -359,3 +359,6 @@ class ReadFromWrite(object):
                         self.set_knob_from_data(node, data, knob, r,
                                                 data_key=node_option,
                                                 is_option=True)
+
+                    # Label read node with write node name.
+                    r["label"].setValue(node)
