@@ -20,7 +20,7 @@ class SceneAsset(GenericAsset):
 
         nuke.nodePaste(file_path)
 
-        if iAObj.options["importSettings"]:
+        if iAObj.options.get("importSettings", ""):
 
             component = ftrack.Component(iAObj.componentId)
             parent = component.getVersion().getAsset().getParent()

@@ -273,3 +273,16 @@ def scan_for_unused_components():
     # Import components on request
     if ret == QtGui.QMessageBox.Save:
         import_components(components)
+
+
+def setup():
+    """Import exported scripts from NukeStudio."""
+
+    session = ftrack_connect.session.get_shared_session()
+    task = session.get("Task", os.environ["FTRACK_TASKID"])
+    components = session.query(
+        'Component where version.task.parent.id is_not "{0}" and '
+        'version.asset.parent.id is "{0}"'.format(task["parent"]["id"])
+    )
+
+    import_components(components)

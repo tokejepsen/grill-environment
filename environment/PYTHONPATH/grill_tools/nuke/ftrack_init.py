@@ -208,6 +208,10 @@ def init():
     cmd += "ftrack_utils.import_all_gizmos()"
     menu.addCommand("Import All Gizmos", cmd)
 
+    cmd = "from grill_tools.nuke import ftrack_utils;"
+    cmd += "ftrack_utils.setup()"
+    menu.addCommand("Setup", cmd)
+
     # Adding published LUT
     lut_init()
 
