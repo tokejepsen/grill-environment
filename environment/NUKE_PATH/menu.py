@@ -25,6 +25,11 @@ menu.addCommand(
     "from grill_tools.nuke import utils;utils.open_from_node()",
     "ctrl+shift+o"
 )
+menu.addCommand(
+    "Open with DJV",
+    "from grill_tools.nuke import utils;utils.open_with_djv()",
+    "ctrl+shift+d"
+)
 
 
 # grill-tools callbacks
