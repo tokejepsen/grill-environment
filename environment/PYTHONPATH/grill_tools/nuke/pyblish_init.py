@@ -41,6 +41,14 @@ def custom_toggle_instance(instance, new_value, old_value):
             instance[0]["process_royalrender"].setValue(bool(new_value))
         return
 
+    # WriteGeo instances
+    if "writegeo" in instance.data["families"]:
+        if "local" in instance.data["families"]:
+            instance[0]["process_local"].setValue(bool(new_value))
+        if "royalrender" in instance.data["families"]:
+            instance[0]["process_royalrender"].setValue(bool(new_value))
+        return
+
 
 def register_process_plugins():
 
@@ -176,6 +184,48 @@ def feedback_context_success(context):
     messagebox.exec_()
 
 
+# Nuke callback for modifying the Write nodes on creation
+def modify_write_node():
+
+    # Setting the file path
+    file_path = (
+        "[python {nuke.script_directory()}]/workspace/[python "
+        "{nuke.thisNode().name()}]/[python {os.path.splitext("
+        "os.path.basename(nuke.scriptName()))[0]}]/[python {"
+        "os.path.splitext(os.path.basename(nuke.scriptName()))[0]}]_"
+        "[python {nuke.thisNode().name()}].%04d.exr"
+    )
+
+    nuke.thisNode()["file"].setValue(file_path)
+
+    # Setting the file type
+    nuke.thisNode()["file_type"].setValue("exr")
+
+    # Setting metadata
+    nuke.thisNode()["metadata"].setValue("all metadata")
+
+    # Enable create directories if it exists.
+    # Older version of Nuke does not have this option.
+    if "create_directories" in nuke.thisNode().knobs():
+        nuke.thisNode()["create_directories"].setValue(True)
+
+
+# Nuke callback for modifying the WriteGeo nodes on creation
+def modify_writegeo_node():
+
+    # Setting the file path
+    file_path = (
+        "[python {nuke.script_directory()}]/workspace/[python "
+        "{os.path.splitext(os.path.basename(nuke.scriptName()))[0]}]_"
+        "[python {nuke.thisNode().name()}].abc"
+    )
+
+    nuke.thisNode()["file"].setValue(file_path)
+
+    # Setting the file type
+    nuke.thisNode()["file_type"].setValue("abc")
+
+
 def init():
 
     # Register callbacks
@@ -217,3 +267,6 @@ def init():
     menu.addCommand("Process RoyalRender silent...", cmd, "ctrl+2", index=4)
 
     menu.addSeparator(index=5)
+
+    nuke.addOnUserCreate(modify_write_node, nodeClass="Write")
+    nuke.addOnUserCreate(modify_writegeo_node, nodeClass="WriteGeo")

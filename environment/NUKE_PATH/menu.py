@@ -31,36 +31,6 @@ menu.addCommand(
     "ctrl+shift+d"
 )
 
-
-# grill-tools callbacks
-# Nuke callback for modifying the write nodes on creation
-def modify_write_node():
-
-    # Setting the file path
-    file_path = (
-        "[python {nuke.script_directory()}]/workspace/[python "
-        "{nuke.thisNode().name()}]/[python {os.path.splitext("
-        "os.path.basename(nuke.scriptName()))[0]}]/[python {"
-        "os.path.splitext(os.path.basename(nuke.scriptName()))[0]}]_"
-        "[python {nuke.thisNode().name()}].%04d.exr"
-    )
-
-    nuke.thisNode()["file"].setValue(file_path)
-
-    # Setting the file type
-    nuke.thisNode()["file_type"].setValue("exr")
-
-    # Setting metadata
-    nuke.thisNode()["metadata"].setValue("all metadata")
-
-    # Enable create directories if it exists.
-    # Older version of Nuke does not have this option.
-    if "create_directories" in nuke.thisNode().knobs():
-        nuke.thisNode()["create_directories"].setValue(True)
-
-
-nuke.addOnUserCreate(modify_write_node, nodeClass="Write")
-
 # Setup for pyblish
 pyblish_init.init()
 
