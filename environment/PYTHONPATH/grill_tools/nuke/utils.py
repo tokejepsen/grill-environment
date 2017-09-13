@@ -17,6 +17,22 @@ def open_from_node():
 
 
 def get_regex_files(pattern_items):
+    """Traverse the pattern items to find files with regex expressions.
+
+    Usage:
+        >>> pattern_items = [
+                "C:" + os.sep,
+                "Program Files",
+                "djv-[0-9].[0-9].[0-9]-Windows-64",
+                "bin",
+                "djv_view.exe"
+            ]
+        >>> get_regex_files(pattern_items)
+        [
+            "C:\\Program Files\\djv-1.1.0-Windows-64\\bin\\djv_view.exe",
+            "C:\\Program Files\\djv-1.0.0-Windows-64\\bin\\djv_view.exe"
+        ]
+    """
 
     # Construct patterns from pattern items
     patterns = []
@@ -26,7 +42,7 @@ def get_regex_files(pattern_items):
         patterns.append("^{0}$".format(pattern.replace("\\", "\\\\")))
 
     # Find files from patterns
-    executables = []
+    files = []
     for root, dirnames, filenames in os.walk(pattern_items[0], topdown=True):
 
         # Remove invalid directories to search
@@ -44,9 +60,9 @@ def get_regex_files(pattern_items):
             path = os.path.join(root, f)
             for pattern in patterns:
                 if re.match(pattern, path):
-                    executables.append(path)
+                    files.append(path)
 
-    return executables
+    return files
 
 
 def open_with_djv():
