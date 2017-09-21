@@ -34,6 +34,11 @@ menu.addCommand(
 # Setup for pyblish
 pyblish_init.init()
 
+# Locking frame range.
+if not nuke.root()["lock_range"].getValue():
+    print "Locking frame range."
+    nuke.root()["lock_range"].setValue(True)
+
 # Adding ftrack assets if import is available.
 try:
     imp.find_module("ftrack_connect")
