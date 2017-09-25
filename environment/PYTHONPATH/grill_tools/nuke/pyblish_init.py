@@ -11,43 +11,9 @@ from Qt import QtWidgets
 
 
 # Pyblish callbacks for presisting instance states to the scene
-def custom_toggle_instance(instance, new_value, old_value):
+def instance_toggled(instance, new_value, old_value):
 
-    if "gizmo" in instance.data["families"]:
-        instance[0]["gizmo"].setValue(bool(new_value))
-        return
-
-    if "lut" in instance.data["families"]:
-        instance[0]["lut"].setValue(bool(new_value))
-        return
-
-    # Backdrop instances
-    if "scene" == instance.data["family"]:
-        if instance[0].Class() == "BackdropNode":
-            for node in instance[0].getNodes():
-                instance[0]["publish"].setValue(bool(new_value))
-        return
-
-    # Read instances
-    if "read" == instance.data["family"]:
-        instance[0]["publish"].setValue(bool(new_value))
-        return
-
-    # Write instances
-    if "write" in instance.data["families"]:
-        if "local" in instance.data["families"]:
-            instance[0]["process_local"].setValue(bool(new_value))
-        if "royalrender" in instance.data["families"]:
-            instance[0]["process_royalrender"].setValue(bool(new_value))
-        return
-
-    # WriteGeo instances
-    if "writegeo" in instance.data["families"]:
-        if "local" in instance.data["families"]:
-            instance[0]["process_local"].setValue(bool(new_value))
-        if "royalrender" in instance.data["families"]:
-            instance[0]["process_royalrender"].setValue(bool(new_value))
-        return
+    instance.data["instanceToggled"](instance, new_value)
 
 
 def register_process_plugins():
@@ -229,7 +195,7 @@ def modify_writegeo_node():
 def init():
 
     # Register callbacks
-    api.register_callback("instanceToggled", custom_toggle_instance)
+    api.register_callback("instanceToggled", instance_toggled)
 
     # Register GUI
     api.register_gui("pyblish_lite")
