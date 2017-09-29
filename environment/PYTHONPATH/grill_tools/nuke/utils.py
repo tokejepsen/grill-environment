@@ -13,7 +13,12 @@ def open_from_node():
         if path is None:
             continue
 
-        webbrowser.open("file://{0}".format(os.path.dirname(path)))
+        path = os.path.dirname(path)
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        webbrowser.open("file://{0}".format(path))
 
 
 def get_regex_files(pattern_items):
