@@ -222,7 +222,7 @@ def init():
 
     cmd = "from grill_tools.nuke import pyblish_init;"
     cmd += "pyblish_init.process_targets_local_silent()"
-    menu.addCommand("Process Local silent...", cmd, "ctrl+1", index=2)
+    menu.addCommand("Process Local silent...", cmd, index=2)
 
     cmd = "from grill_tools.nuke import pyblish_init;"
     cmd += "pyblish_init.process_targets_royalrender()"
@@ -230,7 +230,7 @@ def init():
 
     cmd = "from grill_tools.nuke import pyblish_init;"
     cmd += "pyblish_init.process_targets_royalrender_silent()"
-    menu.addCommand("Process RoyalRender silent...", cmd, "ctrl+2", index=4)
+    menu.addCommand("Process RoyalRender silent...", cmd, index=4)
 
     menu.addSeparator(index=5)
 
