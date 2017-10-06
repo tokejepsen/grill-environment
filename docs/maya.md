@@ -18,4 +18,10 @@ Resolution height | height
 
 The resolution will only be set once, when initially launching Maya. You can force the settings to be applied on start up, by unchecking the attribute ```Ftrack Resolution Set``` on the ```defaultResolution``` node.
 
+## Environment Variables
+
+Environment Variable | Description | Example
+--- | --- | ---
+GRILL_TOOLS_SET_WORKSPACE | This sets up the Maya project and the output paths, to the relative "workspace" directory. | No value is required.
+
 # [BACK](index.md)

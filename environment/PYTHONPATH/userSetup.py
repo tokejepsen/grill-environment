@@ -91,7 +91,8 @@ def grill_tools_set_workspace():
     pm.system.Workspace.save()
 
 
-pm.evalDeferred("grill_tools_set_workspace()")
+if os.environ.get("GRILL_TOOLS_SET_WORKSPACE", ""):
+    pm.evalDeferred("grill_tools_set_workspace()")
 
 
 # Pyblish callbacks for presisting instance states to the scene.
