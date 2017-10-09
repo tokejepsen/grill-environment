@@ -73,7 +73,7 @@ def process_targets_local_silent():
     register_process_plugins()
 
     context = util.publish(targets=["process", "process.local"])
-    feedback_context_success(context)
+    feedback_context(context)
 
 
 def process_targets_royalrender():
@@ -94,28 +94,37 @@ def process_targets_royalrender_silent():
     register_process_royalrender_plugins()
 
     context = util.publish(targets=["process", "process.royalrender"])
-    feedback_context_success(context)
+    feedback_context(context)
 
 
-def feedback_context_success(context):
+def feedback_context(context):
 
     header = "{:<40} -> {}".format("Plug-in", "Instance")
     result = "{plugin.__name__:<40} -> {instance}"
     error = "+-- EXCEPTION: {:<70}"
+    error_results = list()
     results = list()
     errors = False
     for r in context.data["results"]:
         # Format exception (if any)
         if r["error"]:
             errors = True
-            results.append(result.format(**r))
-            results.append(error.format(r["error"]))
+            error_results.append(result.format(**r))
+            error_results.append(error.format(r["error"]))
 
+        if r["records"]:
+            results.append(result.format(**r))
+
+        for record in r["records"]:
+            results.append(record.msg)
+
+    error_report = "{header}\n{line}\n{results}".format(
+        header=header, results="\n".join(error_results), line="-" * 70
+    )
     report = "{header}\n{line}\n{results}".format(
         header=header, results="\n".join(results), line="-" * 70
     )
 
-    # Display changes to user
     parent = None
     current = QtWidgets.QApplication.activeWindow()
     while current:
@@ -131,21 +140,22 @@ def feedback_context_success(context):
         messagebox.setText(
             "Errors when trying to process."
         )
-        messagebox.setDetailedText(report)
-
-        spacer = QtWidgets.QWidget()
-        spacer.setMinimumSize(400, 0)
-        spacer.setSizePolicy(
-            QtWidgets.QSizePolicy.Minimum,
-            QtWidgets.QSizePolicy.Expanding
-        )
-
-        layout = messagebox.layout()
-        layout.addWidget(spacer, layout.rowCount(), 0, 1, layout.columnCount())
+        messagebox.setDetailedText(error_report)
     else:
         messagebox.setText(
             "Process successfull."
         )
+        messagebox.setDetailedText(report)
+
+    spacer = QtWidgets.QWidget()
+    spacer.setMinimumSize(400, 0)
+    spacer.setSizePolicy(
+        QtWidgets.QSizePolicy.Minimum,
+        QtWidgets.QSizePolicy.Expanding
+    )
+
+    layout = messagebox.layout()
+    layout.addWidget(spacer, layout.rowCount(), 0, 1, layout.columnCount())
 
     messagebox.exec_()
 
