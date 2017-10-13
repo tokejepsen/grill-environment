@@ -94,50 +94,8 @@ def grill_tools_set_workspace():
 if os.environ.get("GRILL_TOOLS_SET_WORKSPACE", ""):
     pm.evalDeferred("grill_tools_set_workspace()")
 
-
-# Pyblish callbacks for presisting instance states to the scene.
-def toggle_instance(instance, new_value, old_value):
-
-    node = instance[0]
-
-    families = instance.data.get("families", [])
-    if "cache" in families or "scene" in families:
-        attrs = []
-        for attr in node.listAttr(userDefined=True):
-            attrs.append(attr.name(includeNode=False))
-
-        attr_list = list(set(attrs) & set(families))
-
-        if attr_list:
-            node.attr(attr_list[0]).set(new_value)
-
-    if "renderlayer" in instance.data.get("families", []):
-
-        node.renderable.set(new_value)
-
-    if "playblast" in instance.data.get("families", []):
-
-        node.getTransform().publish.set(new_value)
-
-    if "file" in instance.data.get("families", []):
-
-        node.publish.set(new_value)
-
-
-pyblish.api.register_callback("instanceToggled", toggle_instance)
-
-# Register GUI
-pyblish.api.register_gui("pyblish_lite")
-pyblish.api.register_gui("pyblish_qml")
-
-# pyblish-qml settings
-try:
-    __import__("pyblish_qml")
-except ImportError as e:
-    print("grill-tools: Could not load pyblish-qml: %s " % e)
-else:
-    from pyblish_qml import settings
-    settings.WindowSize = (800, 600)
+# Setup for pyblish
+mc.evalDeferred("from grill_tools.maya import pyblish_init;pyblish_init.init()")
 
 
 # Adding grill-tools menu
