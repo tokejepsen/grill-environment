@@ -5,8 +5,6 @@ import pymel.core as pm
 import maya.cmds as mc
 import maya.mel as mm
 
-import pyblish.api
-
 
 # Quiet load alembic plugins
 pm.loadPlugin("AbcExport.mll", quiet=True)
@@ -95,7 +93,9 @@ if os.environ.get("GRILL_TOOLS_SET_WORKSPACE", ""):
     pm.evalDeferred("grill_tools_set_workspace()")
 
 # Setup for pyblish
-mc.evalDeferred("from grill_tools.maya import pyblish_init;pyblish_init.init()")
+mc.evalDeferred(
+    "from grill_tools.maya import pyblish_init;pyblish_init.init()"
+)
 
 
 # Adding grill-tools menu
@@ -112,14 +112,26 @@ def grill_tools_menu_init():
         label="grill-tools"
     )
 
+    cmd = "from grill_tools import pyblish_utils;"
+    cmd += "pyblish_utils.process_targets_all()"
+    mc.menuItem(label="Process...", parent=menu, command=cmd)
+
+    cmd = "from grill_tools import pyblish_utils;"
+    cmd += "pyblish_utils.process_targets_local()"
+    mc.menuItem(label="Process Local...", parent=menu, command=cmd)
+
+    cmd = "from grill_tools import pyblish_utils;"
+    cmd += "pyblish_utils.process_targets_local_silent()"
+    mc.menuItem(label="Process Local silent...", parent=menu, command=cmd)
+
+    cmd = "from grill_tools import pyblish_utils;"
+    cmd += "pyblish_utils.process_targets_royalrender()"
+    mc.menuItem(label="Process RoyalRender...", parent=menu, command=cmd)
+
+    cmd = "from grill_tools import pyblish_utils;"
+    cmd += "pyblish_utils.process_targets_royalrender_silent()"
     mc.menuItem(
-        "processingLocation",
-        label="Processing Location",
-        parent=menu,
-        command=(
-            "from grill_tools.maya import processing_location;" +
-            "processing_location.show()"
-        )
+        label="Process RoyalRender silent...", parent=menu, command=cmd
     )
 
 

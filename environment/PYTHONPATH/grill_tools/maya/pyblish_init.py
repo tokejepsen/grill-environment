@@ -1,5 +1,5 @@
 import pyblish.api
-from Qt import QtWidgets
+from grill_tools import pyblish_utils
 
 
 # Pyblish callbacks for presisting instance states to the scene.
@@ -33,21 +33,6 @@ def toggle_instance(instance, new_value, old_value):
 
 def init():
 
+    pyblish_utils.init()
+
     pyblish.api.register_callback("instanceToggled", toggle_instance)
-
-    # Register GUI
-    pyblish.api.register_gui("pyblish_lite")
-    pyblish.api.register_gui("pyblish_qml")
-
-    # pyblish-qml settings
-    try:
-        __import__("pyblish_qml")
-    except ImportError as e:
-        print("grill-tools: Could not load pyblish-qml: %s " % e)
-    else:
-        from pyblish_qml import settings
-        app = QtWidgets.QApplication.instance()
-        screen_resolution = app.desktop().screenGeometry()
-        width, height = screen_resolution.width(), screen_resolution.height()
-        settings.WindowSize = (width / 2, height - (height / 15))
-        settings.WindowPosition = (0, 0)
