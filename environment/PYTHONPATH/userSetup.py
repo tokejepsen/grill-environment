@@ -114,20 +114,20 @@ def grill_tools_menu_init():
 
     cmd = "from grill_tools import pyblish_utils;"
     cmd += "pyblish_utils.process_targets_local()"
-    mc.menuItem(label="Process Local...", parent=menu, command=cmd)
+    mc.menuItem(label="Process Local", parent=menu, command=cmd)
 
     cmd = "from grill_tools import pyblish_utils;"
     cmd += "pyblish_utils.process_targets_local_silent()"
-    mc.menuItem(label="Process Local silent...", parent=menu, command=cmd)
+    mc.menuItem(label="Process Local silent", parent=menu, command=cmd)
 
     cmd = "from grill_tools import pyblish_utils;"
     cmd += "pyblish_utils.process_targets_royalrender()"
-    mc.menuItem(label="Process RoyalRender...", parent=menu, command=cmd)
+    mc.menuItem(label="Process RoyalRender", parent=menu, command=cmd)
 
     cmd = "from grill_tools import pyblish_utils;"
     cmd += "pyblish_utils.process_targets_royalrender_silent()"
     mc.menuItem(
-        label="Process RoyalRender silent...", parent=menu, command=cmd
+        label="Process RoyalRender silent", parent=menu, command=cmd
     )
 
 
