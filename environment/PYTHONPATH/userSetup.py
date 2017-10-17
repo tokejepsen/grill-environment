@@ -113,10 +113,6 @@ def grill_tools_menu_init():
     )
 
     cmd = "from grill_tools import pyblish_utils;"
-    cmd += "pyblish_utils.process_targets_all()"
-    mc.menuItem(label="Process...", parent=menu, command=cmd)
-
-    cmd = "from grill_tools import pyblish_utils;"
     cmd += "pyblish_utils.process_targets_local()"
     mc.menuItem(label="Process Local...", parent=menu, command=cmd)
 
