@@ -34,10 +34,16 @@ menu.addCommand(
 # Setup for pyblish
 pyblish_init.init()
 
-# Locking frame range.
-if not nuke.root()["lock_range"].getValue():
-    print "Locking frame range."
-    nuke.root()["lock_range"].setValue(True)
+
+# Check frame range is locked when reading, since startup locking doesn't work
+def modify_read_node():
+    if not nuke.root()["lock_range"].getValue():
+        print "Locking frame range."
+        nuke.root()["lock_range"].setValue(True)
+
+
+nuke.addOnUserCreate(modify_read_node, nodeClass="Read")
+
 
 # Adding ftrack assets if import is available.
 try:
