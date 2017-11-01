@@ -285,4 +285,12 @@ def setup():
         'version.asset.parent.id is "{0}"'.format(task["parent"]["id"])
     )
 
-    import_components(components)
+    max_version = 0
+    latest_component = None
+    for component in components:
+        if max_version < component["version"]["version"]:
+            max_version = component["version"]["version"]
+            latest_component = component
+
+    if latest_component:
+        import_components([latest_component])
