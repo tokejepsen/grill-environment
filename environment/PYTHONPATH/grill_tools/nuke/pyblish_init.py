@@ -30,6 +30,9 @@ def modify_write_node():
     # Setting metadata
     nuke.thisNode()["metadata"].setValue("all metadata")
 
+    # Setting autocrop
+    nuke.thisNode()["autocrop"].setValue(True)
+
     # Enable create directories if it exists.
     # Older version of Nuke does not have this option.
     if "create_directories" in nuke.thisNode().knobs():
