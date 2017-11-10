@@ -282,7 +282,8 @@ def setup():
     task = session.get("Task", os.environ["FTRACK_TASKID"])
     components = session.query(
         'Component where version.task.parent.id is_not "{0}" and '
-        'version.asset.parent.id is "{0}"'.format(task["parent"]["id"])
+        'version.asset.parent.id is "{0}" and version.asset.type.short is '
+        '"scene"'.format(task["parent"]["id"])
     )
 
     max_version = 0
