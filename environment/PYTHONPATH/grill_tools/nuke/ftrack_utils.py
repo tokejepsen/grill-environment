@@ -3,33 +3,34 @@ import operator
 
 import nuke
 
+import ftrack_api
 import ftrack_connect
 from ftrack_connect.connector import FTAssetObject, HelpFunctions
 from ftrack_connect_nuke.connector import Connector
-from Qt import QtGui, QtWidgets
+from Qt import QtGui, QtWidgets, QtCore
 
 
-class Window(QtWidgets.QDialog):
+class ProgressBar(QtWidgets.QWidget):
+    """Progess bar for publishing."""
 
-    def __init__(self, title):
-        super(Window, self).__init__()
-
-        layout = QtWidgets.QHBoxLayout()
-        app = QtWidgets.QApplication.instance()
-        screen_resolution = app.desktop().screenGeometry()
-        s_width, s_height = (
-            screen_resolution.width(), screen_resolution.height()
+    def __init__(self, parent=None):
+        super(ProgressBar, self).__init__(parent)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.setWindowFlags(
+            QtCore.Qt.WindowStaysOnTopHint |
+            QtCore.Qt.FramelessWindowHint
         )
-        width = 400
-        self.setGeometry((s_width / 2) - (width / 2), s_height / 2, width, 0)
-        self.setWindowTitle(title)
-        self.setLayout(layout)
-        self.show()
+
+        layout = QtWidgets.QVBoxLayout(self)
+        self.bar = QtGui.QProgressBar()
+        layout.addWidget(self.bar)
+
+        # Center widget on screen
+        self.resize(500, 500)
 
 
 def import_all_image_sequences():
-
-    win = Window("Importing all image sequences...")
 
     session = ftrack_connect.session.get_shared_session()
     task = session.query(
@@ -52,16 +53,20 @@ def import_all_image_sequences():
         if version["id"] in scene_ids:
             continue
 
-        components.extend(version["components"])
+        # Only import "main" components
+        for component in version["components"]:
+            if component["name"] == "main":
+                components.append(component)
 
-    import_components(components)
+    progress_bar = ProgressBar()
+    progress_bar.show()
+    for progress in import_components(components):
+        progress_bar.bar.setValue(progress * 100)
 
-    win.deleteLater()
+    progress_bar.deleteLater()
 
 
 def import_all_gizmos():
-
-    win = Window("Importing all gizmos...")
 
     session = ftrack_connect.session.get_shared_session()
     task = session.query(
@@ -88,9 +93,12 @@ def import_all_gizmos():
         if not node_exists:
             new_components.append(component)
 
-    import_components(new_components)
+    progress_bar = ProgressBar()
+    progress_bar.show()
+    for progress in import_components(components):
+        progress_bar.bar.setValue(progress * 100)
 
-    win.deleteLater()
+    progress_bar.deleteLater()
 
 
 def get_latest_versions(versions):
@@ -109,6 +117,7 @@ def get_latest_versions(versions):
 
 
 def import_components(components):
+    """Import components with host plugins iterator."""
 
     locations = {}
     session = ftrack_connect.session.get_shared_session()
@@ -116,22 +125,30 @@ def import_components(components):
         locations[location["id"]] = location
 
     connector = Connector()
+    progress = 0
     for component in components:
-        location_id = max(
-            component.get_availability().iteritems(),
-            key=operator.itemgetter(1)
-        )[0]
-        file_path = locations[location_id].get_resource_identifier(component)
+        try:
+            location_id = max(
+                component.get_availability().iteritems(),
+                key=operator.itemgetter(1)
+            )[0]
+            file_path = locations[location_id].get_resource_identifier(
+                component
+            )
 
-        asset = FTAssetObject(
-                componentId=component['id'],
-                filePath=file_path,
-                componentName=component['name'],
-                assetVersionId=component["version"]["id"],
-                options={}
-        )
+            asset = FTAssetObject(
+                    componentId=component['id'],
+                    filePath=file_path,
+                    componentName=component['name'],
+                    assetVersionId=component["version"]["id"],
+                    options={}
+            )
 
-        connector.importAsset(asset)
+            connector.importAsset(asset)
+            progress += 1.0 / len(components)
+            yield progress
+        except ftrack_api.exception.ComponentNotInLocationError:
+            pass
 
 
 def get_unused_components():
