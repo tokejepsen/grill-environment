@@ -289,7 +289,8 @@ def scan_for_unused_components():
 
     # Import components on request
     if ret == QtGui.QMessageBox.Save:
-        import_components(components)
+        for progress in import_components(components):
+            print progress
 
 
 def setup():
@@ -311,4 +312,4 @@ def setup():
             latest_component = component
 
     if latest_component:
-        import_components([latest_component])
+        next(import_components([latest_component]))
