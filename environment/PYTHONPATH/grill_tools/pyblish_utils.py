@@ -17,6 +17,16 @@ def register_process_plugins():
         pass
 
     try:
+        import pyblish_nukeassist
+        paths = [
+            os.path.join(
+                os.path.dirname(pyblish_nukeassist.__file__), "plugins"
+            )
+        ]
+    except ImportError:
+        pass
+
+    try:
         import pyblish_maya
         paths = [
             os.path.join(os.path.dirname(pyblish_maya.__file__), "plugins")
