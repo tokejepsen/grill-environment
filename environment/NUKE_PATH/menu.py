@@ -34,6 +34,12 @@ menu.addCommand("Process RoyalRender silent", cmd, "ctrl+alt+2", index=4)
 
 menu.addSeparator(index=5)
 
+nukeassist_menu = menu.addMenu("NukeAssist")
+nukeassist_menu.addCommand(
+    "Create Write Node",
+    "from grill_tools.nukeassist.write_node import create;create()"
+)
+
 menu.addCommand(
     "Workspace Loader",
     "from grill_tools.nuke import workspace_loader;workspace_loader.show()"
