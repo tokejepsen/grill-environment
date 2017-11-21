@@ -8,29 +8,31 @@ from Qt import QtWidgets
 
 def register_process_plugins():
 
+    paths = []
+
     try:
         import pyblish_nuke
-        paths = [
+        paths.append(
             os.path.join(os.path.dirname(pyblish_nuke.__file__), "plugins")
-        ]
+        )
     except ImportError:
         pass
 
     try:
         import pyblish_nukeassist
-        paths = [
+        paths.append(
             os.path.join(
                 os.path.dirname(pyblish_nukeassist.__file__), "plugins"
             )
-        ]
+        )
     except ImportError:
         pass
 
     try:
         import pyblish_maya
-        paths = [
+        paths.append(
             os.path.join(os.path.dirname(pyblish_maya.__file__), "plugins")
-        ]
+        )
     except ImportError:
         pass
 
