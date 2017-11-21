@@ -1,0 +1,13 @@
+set cut_paste_input [stack 0]
+push $cut_paste_input
+Write {
+ file "\[python \{nuke.script_directory()\}]/workspace/\[python \{nuke.thisNode().name()\}]/\[python \{os.path.splitext(os.path.basename(nuke.scriptName()))\[0]\}]/\[python \{os.path.splitext(os.path.basename(nuke.scriptName()))\[0]\}]_\[python \{nuke.thisNode().name()\}].%04d.exr"
+ file_type exr
+ autocrop true
+ metadata "all metadata"
+ create_directories true
+ in_colorspace linear
+ out_colorspace linear
+ name Write1
+ selected true
+}

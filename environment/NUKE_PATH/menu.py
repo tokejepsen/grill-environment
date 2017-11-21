@@ -34,10 +34,10 @@ menu.addCommand("Process RoyalRender silent", cmd, "ctrl+alt+2", index=4)
 
 menu.addSeparator(index=5)
 
-nukeassist_menu = menu.addMenu("NukeAssist")
+nukeassist_menu = menu.addMenu("Create")
 nukeassist_menu.addCommand(
-    "Create Write Node",
-    "from grill_tools.nukeassist.write_node import create;create()"
+    "Write",
+    "from grill_tools.nuke.node import create;create(\"Write\")"
 )
 
 menu.addCommand(
