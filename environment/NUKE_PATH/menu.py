@@ -62,6 +62,9 @@ tools_menu.addCommand(
     "from grill_tools.nuke import utils;utils.open_with_djv()",
     "ctrl+shift+d"
 )
+cmd = "from grill_tools.nuke import utils;"
+cmd += "utils.createExrCamVray(nuke.selectedNode())"
+tools_menu.addCommand("Camera From Vray EXR", cmd)
 
 
 # Register callbacks
