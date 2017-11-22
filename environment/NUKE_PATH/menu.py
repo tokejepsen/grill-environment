@@ -34,29 +34,30 @@ menu.addCommand("Process RoyalRender silent", cmd, "ctrl+alt+2", index=4)
 
 menu.addSeparator(index=5)
 
-nukeassist_menu = menu.addMenu("Create")
-nukeassist_menu.addCommand(
+create_menu = menu.addMenu("Create")
+create_menu.addCommand(
     "Write",
     "from grill_tools.nuke.node import create;create(\"Write\")"
 )
 
-menu.addCommand(
+tools_menu = menu.addMenu("Tools")
+tools_menu.addCommand(
     "Workspace Loader",
     "from grill_tools.nuke import workspace_loader;workspace_loader.show()"
 )
 # Can't find any hotkey with "r" that isn't already taken. Hence "u".
-menu.addCommand(
+tools_menu.addCommand(
     "Read from Write",
     "from grill_tools.nuke.read_from_write import ReadFromWrite;"
     "ReadFromWrite()",
     "u"
 )
-menu.addCommand(
+tools_menu.addCommand(
     "Open from Node",
     "from grill_tools.nuke import utils;utils.open_from_node()",
     "ctrl+shift+o"
 )
-menu.addCommand(
+tools_menu.addCommand(
     "Open with DJV",
     "from grill_tools.nuke import utils;utils.open_with_djv()",
     "ctrl+shift+d"
