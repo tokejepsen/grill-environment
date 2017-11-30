@@ -1,3 +1,4 @@
+import os
 import imp
 
 import nuke
@@ -137,6 +138,23 @@ def modify_writegeo_node():
 
 nuke.addOnUserCreate(modify_writegeo_node, nodeClass="WriteGeo")
 
+
+# Nuke callback for changing the path extension when changing the file type
+def file_type_changed():
+    node = nuke.thisNode()
+    knob = nuke.thisKnob()
+
+    if knob.name() == "file_type":
+        try:
+            path = nuke.filename(node)
+            node["file"].setValue(
+                "{0}.{1}".format(os.path.splitext(path)[0], knob.value())
+            )
+        except:
+            pass
+
+
+nuke.addKnobChanged(file_type_changed, nodeClass="Write")
 
 # Adding ftrack assets if import is available.
 try:
