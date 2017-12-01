@@ -3,6 +3,8 @@ import re
 import webbrowser
 import subprocess
 import math
+import csv
+import codecs
 
 import nuke
 
@@ -169,3 +171,67 @@ def createExrCamVray(node):
         cam['rotate'].setValueAt(float(math.degrees(rotate[0])), frame, 0)
         cam['rotate'].setValueAt(float(math.degrees(rotate[1])), frame, 1)
         cam['rotate'].setValueAt(float(math.degrees(rotate[2])), frame, 2)
+
+
+def get_columns(path):
+    columns = []
+    with codecs.open(path, 'rU', 'utf-16') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            for index in range(0, len(row)):
+                try:
+                    column = columns[index]
+                except IndexError:
+                    column = []
+
+                column.append(row[index])
+
+                try:
+                    columns[index] = column
+                except IndexError:
+                    columns.append(column)
+
+    return columns
+
+
+def metadata_from_path(path):
+
+    script = ""
+    for column in get_columns(path):
+        script += "{set "
+        script += "\"source/{0}\" \"{1}\"".format(column[0], column[1])
+        script += "}\n"
+
+    node = nuke.createNode("ModifyMetaData")
+    node.knob("metadata").fromScript(script)
+
+    return node
+
+
+def metadata_from_node():
+
+    metadata_nodes = []
+
+    for node in nuke.selectedNodes():
+        csv_file = None
+        root_path = os.path.dirname(nuke.filename(node))
+        for f in os.listdir(root_path):
+            if f.endswith(".csv"):
+                csv_file = os.path.join(root_path, f)
+
+        if csv_file:
+            metadata_nodes.append(metadata_from_path(csv_file))
+
+    return metadata_nodes
+
+
+def write_from_read():
+
+    write_nodes = []
+
+    for node in nuke.selectedNodes(filter="Read"):
+        write_node = nuke.createNode("Write")
+        write_node["file"].setValue(node["file"].value())
+        write_nodes.append(write_node)
+
+    return write_nodes

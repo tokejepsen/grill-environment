@@ -66,6 +66,14 @@ tools_menu.addCommand(
 cmd = "from grill_tools.nuke import utils;"
 cmd += "utils.createExrCamVray(nuke.selectedNode())"
 tools_menu.addCommand("Camera From Vray EXR", cmd)
+tools_menu.addCommand(
+    "Write from Read",
+    "from grill_tools.nuke import utils;utils.write_from_read()"
+)
+tools_menu.addCommand(
+    "Metadata from Node",
+    "from grill_tools.nuke import utils;utils.metadata_from_node()"
+)
 
 
 # Register callbacks
