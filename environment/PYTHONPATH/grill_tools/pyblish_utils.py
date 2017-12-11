@@ -193,3 +193,6 @@ def init():
         width, height = screen_resolution.width(), screen_resolution.height()
         settings.WindowSize = (width / 2, height - (height / 15))
         settings.WindowPosition = (0, 0)
+        pyblish_qml.settings.HiddenSections = [
+            "Collect", "Other", "Extract", "Integrate", "output"
+        ]
