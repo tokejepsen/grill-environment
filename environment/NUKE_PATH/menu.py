@@ -74,6 +74,14 @@ tools_menu.addCommand(
     "Metadata from Node",
     "from grill_tools.nuke import utils;utils.metadata_from_node()"
 )
+tools_menu.addCommand(
+    "Slash Convert",
+    "from grill_tools import slash_converter;slash_converter.show()"
+)
+tools_menu.addCommand(
+    "Slash Convert Toggle",
+    "from grill_tools import slash_converter;slash_converter.toggle()"
+)
 
 
 # Register callbacks
