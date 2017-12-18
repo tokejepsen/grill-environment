@@ -13,3 +13,14 @@ def init():
     pyblish_utils.init()
 
     pyblish.api.register_callback("instanceToggled", instance_toggled)
+
+    # pyblish-qml settings
+    try:
+        __import__("pyblish_qml")
+    except ImportError as e:
+        print("grill-tools: Could not load pyblish-qml: %s " % e)
+    else:
+        from pyblish_qml import settings
+        settings.HiddenSections = [
+            "Collect", "Other", "Integrate", "output"
+        ]
