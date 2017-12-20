@@ -158,7 +158,7 @@ def lut_init():
             component = c
             version = c["version"]["version"]
 
-    if not component:
+    if not component or not list(component["component_locations"]):
         print "{0}: Could not find any published LUTs.".format(__file__)
         return
 
