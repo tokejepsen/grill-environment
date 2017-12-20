@@ -162,7 +162,7 @@ def file_type_changed():
 
     if knob.name() == "file_type":
         try:
-            path = nuke.filename(node)
+            path = node["file"].value()
             node["file"].setValue(
                 "{0}.{1}".format(os.path.splitext(path)[0], knob.value())
             )
