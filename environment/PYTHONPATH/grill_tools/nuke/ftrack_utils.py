@@ -277,6 +277,9 @@ def scan_for_unused_components():
 
     # Create message box
     msgBox = QtGui.QMessageBox()
+    msgBox.setWindowFlags(
+        msgBox.windowFlags() ^ QtCore.Qt.WindowStaysOnTopHint
+    )
     msgBox.setText("Unused components found.")
     msgBox.setDetailedText(msg)
     msgBox.setStandardButtons(
