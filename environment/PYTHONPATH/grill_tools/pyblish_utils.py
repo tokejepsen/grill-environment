@@ -2,7 +2,6 @@ import os
 
 from pyblish import api, util
 import pyblish_qml
-import pyblish_royalrender
 from Qt import QtWidgets
 
 
@@ -47,6 +46,7 @@ def register_process_plugins():
 
 
 def register_process_royalrender_plugins():
+    import pyblish_royalrender
 
     # RoyalRender plugins
     paths = [
