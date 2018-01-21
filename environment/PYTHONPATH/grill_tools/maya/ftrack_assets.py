@@ -335,95 +335,77 @@ class ImageSequenceAsset(GenericAsset):
 
 class MovieAsset(GenericAsset):
 
-    def getStartEndFrames(self, component, iAObj):
-        """Return start and end from *iAObj*."""
-
-        if component.getSystemType() == "sequence":
-            # Find out frame start and end from members if component
-            # system type is sequence.
-            members = component.getMembers(location=None)
-            frames = [int(member.getName()) for member in members]
-            start = min(frames)
-            end = max(frames)
-        else:
-            start, end = HelpFunctions.getFileSequenceStartEnd(iAObj.filePath)
-
-        return start, end
-
     def importAsset(self, iAObj=None):
         component = ftrack.Component(iAObj.componentId)
-        start, end = self.getStartEndFrames(component, iAObj)
         new_nodes = []
 
         # Image plane
-        if iAObj.options["importType"] == "Image Plane":
+        movie_path = iAObj.filePath
 
-            movie_path = iAObj.filePath % start
+        # Getting camera
+        new_camera = False
+        if iAObj.options["attachCamera"]:
+            cam = pm.ls(selection=True)[0]
+        else:
+            cam = pm.createNode("camera")
+            new_camera = True
 
-            # Getting camera
-            new_camera = False
-            if iAObj.options["attachCamera"]:
-                cam = pm.ls(selection=True)[0]
-            else:
-                cam = pm.createNode("camera")
-                new_camera = True
+        if iAObj.options["renameCamera"]:
+            asset_name = component.getVersion().getAsset().getName()
+            pm.rename(cam.getTransform(), asset_name)
 
-            if iAObj.options["renameCamera"]:
-                asset_name = component.getVersion().getAsset().getName()
-                pm.rename(cam.getTransform(), asset_name)
-
-            if new_camera:
-                new_nodes.extend([
-                    cam.name(),
-                    cam.getTransform().name()
-                ])
-
-            if iAObj.options["resolutionGate"]:
-                cam.displayResolution.set(1)
-
-            cam.farClipPlane.set(iAObj.options["imagePlaneDepth"] * 10)
-
-            # Create image plane
-            visibility = True
-            option = "Hidden from other cameras"
-            if iAObj.options["imagePlaneVisibility"] == option:
-                visibility = False
-
-            image_plane_transform, image_plane_shape = pm.imagePlane(
-                camera=cam, showInAllViews=visibility
-            )
-            image_plane_shape.depth.set(iAObj.options["imagePlaneDepth"])
-            # Need to get "type" by string, because its a method as well.
-            pm.Attribute(image_plane_shape + ".type").set(2)
-            image_plane_shape.imageName.set(movie_path)
-            image_plane_shape.useFrameExtension.set(1)
-
+        if new_camera:
             new_nodes.extend([
-                image_plane_transform.name(),
-                image_plane_shape.name()
+                cam.name(),
+                cam.getTransform().name()
             ])
 
-            # Create ground plane
-            if iAObj.options["createGround"]:
-                ground_transform, ground_shape = pm.polyPlane(
-                    name="ground",
-                    height=iAObj.options["groundSize"],
-                    width=iAObj.options["groundSize"]
-                )
+        if iAObj.options["resolutionGate"]:
+            cam.displayResolution.set(1)
 
-                ground_shader = pm.shadingNode(
-                    "lambert", asShader=True
-                )
-                visiblity = iAObj.options["groundVisibility"] / 100
-                ground_shader.transparency.set(visiblity, visiblity, visiblity)
-                pm.select(ground_transform)
-                pm.hyperShade(assign=ground_shader.name())
+        cam.farClipPlane.set(iAObj.options["imagePlaneDepth"] * 10)
 
-                new_nodes.extend([
-                    ground_transform.name(),
-                    ground_shape.name(),
-                    ground_shader.name()
-                ])
+        # Create image plane
+        visibility = True
+        option = "Hidden from other cameras"
+        if iAObj.options["imagePlaneVisibility"] == option:
+            visibility = False
+
+        image_plane_transform, image_plane_shape = pm.imagePlane(
+            camera=cam, showInAllViews=visibility
+        )
+        image_plane_shape.depth.set(iAObj.options["imagePlaneDepth"])
+        # Need to get "type" by string, because its a method as well.
+        pm.Attribute(image_plane_shape + ".type").set(2)
+        image_plane_shape.imageName.set(movie_path)
+        image_plane_shape.useFrameExtension.set(1)
+
+        new_nodes.extend([
+            image_plane_transform.name(),
+            image_plane_shape.name()
+        ])
+
+        # Create ground plane
+        if iAObj.options["createGround"]:
+            ground_transform, ground_shape = pm.polyPlane(
+                name="ground",
+                height=iAObj.options["groundSize"],
+                width=iAObj.options["groundSize"]
+            )
+
+            ground_shader = pm.shadingNode(
+                "lambert", asShader=True
+            )
+            visiblity = iAObj.options["groundVisibility"] / 100
+            ground_shader.transparency.set(visiblity, visiblity, visiblity)
+            pm.select(ground_transform)
+            pm.hyperShade(assign=ground_shader.name())
+
+            new_nodes.extend([
+                ground_transform.name(),
+                ground_shape.name(),
+                ground_shader.name()
+            ])
 
         self.newData = set(new_nodes)
         self.oldData = set()
@@ -437,12 +419,6 @@ class MovieAsset(GenericAsset):
     def importOptions():
         xml = """
         <tab name="Options">
-            <row name="Import Type" accepts="maya">
-                <option type="radio" name="importType">
-                    <optionitem name="Image Plane" value="True"/>
-                    <optionitem name="File Node"/>
-                </option>
-            </row>
             <row name="Image Plane Settings" accepts="maya">
             </row>
             <row name="Attach to selected camera" accepts="maya">
