@@ -1,3 +1,7 @@
+import os
+import json
+import base64
+
 import hiero.core
 
 import ftrack_api
@@ -80,7 +84,46 @@ def project_tags_init(*args):
         entity_bin.addItem(tag)
 
 
+def assetbuild_tags_init(*args):
+
+    session = ftrack_api.Session()
+
+    decoded_event_data = json.loads(
+        base64.b64decode(
+            os.environ.get("FTRACK_CONNECT_EVENT")
+        )
+    )
+
+    task_id = decoded_event_data.get("selection")[0]["entityId"]
+
+    project = session.get("Task", task_id)["project"]
+    assetbuilds = session.query(
+        "AssetBuild where project.id is \"{0}\"".format(project["id"])
+    )
+
+    grill_bin = get_grill_bin()
+    entity_bin = hiero.core.Bin("ftrack.assetbuild")
+    grill_bin.addItem(entity_bin)
+
+    tags = []
+    for entity in assetbuilds:
+        tag = hiero.core.Tag(entity["name"])
+
+        meta = tag.metadata()
+        meta.setValue("tag.id", entity["id"])
+
+        tags.append((entity["name"], tag))
+
+    tags = sorted(
+        tags, key=lambda tag_tuple: tag_tuple[0].lower()
+    )
+
+    for _, tag in tags:
+        entity_bin.addItem(tag)
+
+
 def init():
 
     hiero.core.events.registerInterest("kStartup", task_tags_init)
     hiero.core.events.registerInterest("kStartup", project_tags_init)
+    hiero.core.events.registerInterest("kStartup", assetbuild_tags_init)
