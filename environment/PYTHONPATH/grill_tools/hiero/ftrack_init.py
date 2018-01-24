@@ -111,6 +111,7 @@ def assetbuild_tags_init(*args):
 
         meta = tag.metadata()
         meta.setValue("tag.id", entity["id"])
+        meta.setValue("tag.ftrack", "assetbuild")
 
         tags.append((entity["name"], tag))
 
