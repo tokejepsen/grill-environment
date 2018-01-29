@@ -131,7 +131,7 @@ def feedback_context(context):
             results.append(result.format(**r))
 
         for record in r["records"]:
-            results.append(record.msg)
+            results.append(str(record.msg))
 
     error_report = "{header}\n{line}\n{results}".format(
         header=header, results="\n".join(error_results), line="-" * 70
