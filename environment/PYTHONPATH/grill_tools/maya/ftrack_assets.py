@@ -345,10 +345,15 @@ class MovieAsset(GenericAsset):
         # Getting camera
         new_camera = False
         if iAObj.options["attachCamera"]:
-            cam = pm.ls(selection=True)[0]
+            try:
+                cam = pm.ls(selection=True)[0]
+            except IndexError:
+                new_camera = True
         else:
-            cam = pm.createNode("camera")
             new_camera = True
+
+        if new_camera:
+            cam = pm.createNode("camera")
 
         if iAObj.options["renameCamera"]:
             asset_name = component.getVersion().getAsset().getName()
