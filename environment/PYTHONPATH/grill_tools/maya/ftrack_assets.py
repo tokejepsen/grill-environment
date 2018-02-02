@@ -385,6 +385,13 @@ class MovieAsset(GenericAsset):
         image_plane_shape.imageName.set(movie_path)
         image_plane_shape.useFrameExtension.set(1)
 
+        start_frame = pm.playbackOptions(q=True, min=True)
+        end_frame = pm.playbackOptions(q=True, max=True)
+
+        image_plane_shape.frameOffset.set(1 - start_frame)
+        image_plane_shape.frameIn.set(start_frame)
+        image_plane_shape.frameOut.set(end_frame)
+
         new_nodes.extend([
             image_plane_transform.name(),
             image_plane_shape.name()
