@@ -26,7 +26,7 @@ class CacheAsset(GenericAsset):
             namespace = ":"
 
         new_nodes = mc.file(
-            iAObj.filePath % 1,
+            iAObj.filePath,
             reference=True,
             namespace=namespace,
             returnNewNodes=True
