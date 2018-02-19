@@ -61,16 +61,20 @@ def register_process_royalrender_plugins():
         api.register_plugin(SubClass)
 
 
-def process_targets_all():
+def register_process_deadline_plugins():
+    import pyblish_deadline
 
-    api.deregister_all_plugins()
-
-    register_process_plugins()
-    register_process_royalrender_plugins()
-
-    pyblish_qml.show(
-        targets=["process", "process.local", "process.royalrender"]
-    )
+    # RoyalRender plugins
+    paths = [
+        os.path.join(os.path.dirname(pyblish_deadline.__file__), "plugins")
+    ]
+    for plugin in api.discover(paths=paths):
+        SubClass = type(
+            plugin.__name__ + "process",
+            (plugin,),
+            {'targets': ["process.deadline"]}
+        )
+        api.register_plugin(SubClass)
 
 
 def process_targets_local():
@@ -110,6 +114,16 @@ def process_targets_royalrender_silent():
 
     context = util.publish(targets=["process", "process.royalrender"])
     feedback_context(context)
+
+
+def process_targets_deadline():
+
+    api.deregister_all_plugins()
+
+    register_process_plugins()
+    register_process_deadline_plugins()
+
+    pyblish_qml.show(targets=["process", "process.deadline"])
 
 
 def feedback_context(context):

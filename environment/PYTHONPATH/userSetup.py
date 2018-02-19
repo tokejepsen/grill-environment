@@ -130,6 +130,12 @@ def grill_tools_menu_init():
         label="Process RoyalRender silent", parent=menu, command=cmd
     )
 
+    cmd = "from grill_tools import pyblish_utils;"
+    cmd += "pyblish_utils.process_targets_deadline()"
+    mc.menuItem(
+        label="Process Deadline", parent=menu, command=cmd
+    )
+
 
 mc.evalDeferred("grill_tools_menu_init()")
 
