@@ -14,26 +14,22 @@ menubar = nuke.menu("Nuke")
 menu = menubar.addMenu("grill-tools")
 
 cmd = "from grill_tools import pyblish_utils;"
-cmd += "pyblish_utils.process_targets_all()"
-menu.addCommand("Process", cmd, index=0)
-
-cmd = "from grill_tools import pyblish_utils;"
 cmd += "pyblish_utils.process_targets_local()"
-menu.addCommand("Process Local", cmd, index=1)
+menu.addCommand("Process Local", cmd, index=0)
 
 cmd = "from grill_tools import pyblish_utils;"
 cmd += "pyblish_utils.process_targets_local_silent()"
-menu.addCommand("Process Local silent", cmd, "ctrl+alt+1", index=2)
+menu.addCommand("Process Local silent", cmd, "ctrl+alt+1", index=1)
 
 cmd = "from grill_tools import pyblish_utils;"
 cmd += "pyblish_utils.process_targets_royalrender()"
-menu.addCommand("Process RoyalRender", cmd, index=3)
+menu.addCommand("Process RoyalRender", cmd, index=2)
 
 cmd = "from grill_tools import pyblish_utils;"
 cmd += "pyblish_utils.process_targets_royalrender_silent()"
-menu.addCommand("Process RoyalRender silent", cmd, "ctrl+alt+2", index=4)
+menu.addCommand("Process RoyalRender silent", cmd, "ctrl+alt+2", index=3)
 
-menu.addSeparator(index=5)
+menu.addSeparator(index=4)
 
 create_menu = menu.addMenu("Create")
 create_menu.addCommand(
