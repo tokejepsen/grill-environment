@@ -7,6 +7,8 @@ from Qt import QtWidgets
 
 def register_process_plugins():
 
+    api.deregister_all_plugins()
+
     paths = []
 
     try:
@@ -87,8 +89,6 @@ def register_process_deadline_plugins():
 
 def process_targets_local():
 
-    api.deregister_all_plugins()
-
     register_process_plugins()
 
     pyblish_qml.show(targets=["process", "process.local"])
@@ -96,7 +96,6 @@ def process_targets_local():
 
 def process_targets_local_silent():
 
-    api.deregister_all_plugins()
     register_process_plugins()
 
     context = util.publish(targets=["process", "process.local"])
@@ -104,8 +103,6 @@ def process_targets_local_silent():
 
 
 def process_targets_royalrender():
-
-    api.deregister_all_plugins()
 
     register_process_plugins()
     register_process_royalrender_plugins()
@@ -115,8 +112,6 @@ def process_targets_royalrender():
 
 def process_targets_royalrender_silent():
 
-    api.deregister_all_plugins()
-
     register_process_plugins()
     register_process_royalrender_plugins()
 
@@ -125,8 +120,6 @@ def process_targets_royalrender_silent():
 
 
 def process_targets_deadline():
-
-    api.deregister_all_plugins()
 
     register_process_plugins()
     register_process_deadline_plugins()
