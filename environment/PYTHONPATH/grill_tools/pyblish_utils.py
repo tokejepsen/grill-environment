@@ -35,6 +35,14 @@ def register_process_plugins():
     except ImportError:
         pass
 
+    try:
+        import pyblish_ftrack
+        paths.append(
+            os.path.join(os.path.dirname(pyblish_ftrack.__file__), "plugins")
+        )
+    except ImportError:
+        pass
+
     # process plugins
     for plugin in api.discover(paths=paths):
         SubClass = type(
