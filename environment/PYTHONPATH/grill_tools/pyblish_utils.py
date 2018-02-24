@@ -63,6 +63,10 @@ def register_process_royalrender_plugins():
         os.path.join(os.path.dirname(pyblish_royalrender.__file__), "plugins")
     ]
     for plugin in api.discover(paths=paths):
+        # Skip in-memory plugins
+        if plugin.__module__ == "pyblish.plugin":
+            continue
+
         SubClass = type(
             plugin.__name__ + "process",
             (plugin,),
@@ -74,11 +78,15 @@ def register_process_royalrender_plugins():
 def register_process_deadline_plugins():
     import pyblish_deadline
 
-    # RoyalRender plugins
+    # Deadline plugins
     paths = [
         os.path.join(os.path.dirname(pyblish_deadline.__file__), "plugins")
     ]
     for plugin in api.discover(paths=paths):
+        # Skip in-memory plugins
+        if plugin.__module__ == "pyblish.plugin":
+            continue
+
         SubClass = type(
             plugin.__name__ + "process",
             (plugin,),
